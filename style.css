@@ -1,0 +1,936 @@
+/* Estilo geral do body */
+body {
+  margin: 0;
+  font-family: 'Arial', sans-serif;
+  background: url('https://i.imgur.com/oKSNu4f.jpeg') no-repeat center center fixed;
+  background-size: cover;
+  animation: fadeBackground 10s infinite;
+  text-align: center;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+/* Informações de status */
+#info {
+  display: flex;
+  justify-content: space-between;
+  padding: 5px 10px;
+  width: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+#money-info, #milkshake-info, #rebirth-info {
+  padding: 12px;
+  font-size: 18px;
+  font-weight: bold;
+  background: rgba(0, 0, 0, 0.7);
+  color: #FFD700;
+  border-radius: 20px;
+  border: 2px solid #FFD700;
+  box-shadow: 0 3px 5px rgba(0, 0, 0, 0.2);
+  width: 20%;
+  text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: transform 0.2s ease-in-out, background 0.2s ease-in-out;
+}
+
+:root {
+  /* Definindo variáveis para facilitar a manutenção e reutilização */
+  --btn-bg-start: #9b5fff;
+  --btn-bg-end: #00bfff;
+  --btn-hover-start: #3e8e41;
+  --btn-hover-end: #2a6e39;
+  --btn-active-bg: #2E8B57;
+  --shadow-color: rgba(72, 239, 128, 0.4);
+  --focus-color: #FFD700;
+}
+
+/* Botões gerais */
+button {
+  padding: 12px 25px;
+  font-size: 18px;
+  border-radius: 20px;
+  background: linear-gradient(135deg, var(--btn-bg-start), var(--btn-bg-end));
+  color: white;
+  border: 2px solid #ffffff;
+  cursor: pointer;
+  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.3), 0 0 10px var(--shadow-color);
+  transition: background 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+  margin: 10px;
+}
+
+/* Efeito hover com transição suave */
+button:hover {
+  background: linear-gradient(135deg, var(--btn-hover-start), var(--btn-hover-end));
+  transform: scale(1.1);
+  box-shadow: 0 7px 15px rgba(0, 0, 0, 0.4), 0 0 15px var(--shadow-color);
+}
+
+/* Botão ativo */
+button:active {
+  transform: scale(0.95);
+  box-shadow: 0 3px 7px rgba(0, 0, 0, 0.3), 0 0 8px var(--shadow-color);
+}
+
+/* Estilização no foco para acessibilidade */
+button:focus {
+  outline: 3px solid var(--focus-color);
+  outline-offset: 2px;
+}
+
+/* Responsividade para dispositivos menores */
+@media (max-width: 768px) {
+  button {
+    padding: 10px 20px;
+    font-size: 16px;
+  }
+}
+
+@media (max-width: 480px) {
+  button {
+    padding: 8px 16px;
+    font-size: 14px;
+  }
+}
+
+/* Botão Rebirth */
+#rebirth-button {
+  background: linear-gradient(135deg, #FF69B4, #FFB6C1);
+  border: 2px solid #ffffff;
+  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.3), 0 0 10px rgba(255, 215, 0, 0.5);
+}
+
+#rebirth-button:hover {
+  background: linear-gradient(135deg, #FFC300, #FF8C00);
+  box-shadow: 0 7px 15px rgba(0, 0, 0, 0.4), 0 0 15px rgba(255, 215, 0, 0.7);
+}
+
+/* Banana */
+/* Container da Banana */
+#banana-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 60vh;
+}
+
+/* Banana Interativa */
+#banana {
+  font-size: 100px;
+  cursor: pointer;
+  transition: transform 0.2s ease, color 0.3s ease, text-shadow 0.3s ease;
+  text-shadow: 0 0 10px rgba(255, 255, 0, 0.5), 0 0 20px rgba(255, 223, 0, 0.7);
+}
+
+#banana:hover {
+  transform: scale(1.2) rotate(10deg);
+  text-shadow: 0 0 15px rgba(255, 255, 0, 0.7), 0 0 30px rgba(255, 223, 0, 0.9);
+}
+
+/* Animação Glow */
+@keyframes glow {
+  0% {
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3), 0 0 20px rgba(255, 223, 0, 0.5);
+  }
+  100% {
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4), 0 0 30px rgba(255, 255, 0, 0.8);
+  }
+}
+
+/* Barra de progresso */
+/* Barra de progresso */
+#progress-bar {
+  width: 80%;
+  height: 25px;
+  background: #f4f4f4; /* Fundo suave */
+  border-radius: 15px;
+  margin: 20px auto;
+  overflow: hidden;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Sombra suave para profundidade */
+  position: relative; /* Para colocar o texto dentro */
+}
+
+/* A parte que preenche a barra */
+#progress-fill {
+  height: 100%;
+  background: linear-gradient(to right, #28a745, #218838); /* Gradiente de verde */
+  width: 0;
+  transition: width 0.5s ease; /* Transição suave ao aumentar ou diminuir */
+}
+
+/* Texto dentro da barra */
+#progress-text {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 14px;
+  font-weight: bold;
+  color: #fff;
+}
+
+/* Feedback de compra como conquista */
+.purchase-feedback {
+  position: fixed;
+  top: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: rgba(0, 0, 0, 0.8); /* Fundo escuro para destaque */
+  color: white; /* Texto branco para contraste */
+  padding: 20px 30px;
+  font-size: 18px;
+  font-weight: bold;
+  border-radius: 15px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+  z-index: 1000;
+  opacity: 1;
+  display: flex;
+  align-items: center;
+  gap: 10px; /* Espaço entre o emoji e o texto */
+  transition: opacity 1s ease-out, transform 0.3s ease-out;
+}
+
+.purchase-feedback.fade-out {
+  opacity: 0;
+  transform: translateX(-50%) translateY(-20px);
+}
+
+/* Estilo do emoji em feedback */
+.purchase-feedback .emoji {
+  font-size: 30px;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: white; /* Fundo branco para destacar o emoji */
+  border-radius: 50%; /* Forma circular */
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.5); /* Leve brilho em volta */
+  animation: bounce 1s ease-in-out infinite;
+}
+
+/* Animação de bounce no emoji */
+@keyframes bounce {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+/* Mensagens de erro estilo jogo de PC */
+.error-message {
+  position: fixed;
+  top: 20px;
+  right: 20px; /* Alinhado ao canto superior direito */
+  background-color: rgba(255, 87, 34, 0.9); /* Fundo avermelhado */
+  color: white;
+  padding: 10px 20px;
+  font-size: 14px; /* Fonte pequena e compacta */
+  font-weight: bold;
+  border-radius: 8px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3); /* Sombra suave */
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  gap: 10px; /* Espaço entre o emoji e o texto */
+  opacity: 0; /* Inicialmente invisível */
+  transform: translateX(100%); /* Fora da tela à direita */
+  transition: opacity 0.3s ease, transform 0.5s ease;
+}
+
+.error-message.show {
+  opacity: 1;
+  transform: translateX(0); /* Entra na tela */
+}
+
+.error-message.hide {
+  opacity: 0;
+  transform: translateX(100%); /* Sai da tela para a direita */
+}
+
+/* Emoji da mensagem de erro */
+.error-message .emoji {
+  font-size: 18px; /* Tamanho compacto */
+  width: 30px;
+  height: 30px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: white; /* Destaque do emoji */
+  border-radius: 50%; /* Forma circular */
+  box-shadow: 0 0 8px rgba(255, 255, 255, 0.6); /* Leve brilho */
+}
+
+/* Animação de shake para ênfase */
+.error-message.shake {
+  animation: shake 0.5s ease-in-out;
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-5px); }
+  50% { transform: translateX(5px); }
+  75% { transform: translateX(-5px); }
+}
+
+.warning-message {
+  position: fixed;
+  top: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: rgba(255, 152, 0, 0.9); /* Fundo laranja com transparência */
+  color: white;
+  padding: 20px 30px;
+  font-size: 18px;
+  font-weight: bold;
+  border-radius: 15px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  gap: 10px; /* Espaço entre o emoji e o texto */
+  opacity: 1;
+  transition: opacity 1s ease-out, transform 0.3s ease-out;
+}
+
+.warning-message.fade-out {
+  opacity: 0;
+  transform: translateX(-50%) translateY(-20px);
+}
+
+/* Emoji na mensagem de aviso */
+.warning-message .emoji {
+  font-size: 30px;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: white; /* Fundo branco para destacar o emoji */
+  border-radius: 50%; /* Forma circular */
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.5); /* Leve brilho em volta */
+}
+
+/* Animação de shake para ênfase */
+.warning-message.shake {
+  animation: shake 0.5s ease-in-out;
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(-50%) translateY(0); }
+  25% { transform: translateX(-50%) translateY(-5px); }
+  50% { transform: translateX(-50%) translateY(5px); }
+  75% { transform: translateX(-50%) translateY(-5px); }
+}
+
+/* Animação de moedas */
+.coin {
+  position: absolute;
+  font-size: 24px;
+  animation: floatUp 1s ease-out forwards;
+}
+
+@keyframes floatUp {
+  0% {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(-100px) scale(0.5);
+    opacity: 0;
+  }
+}
+
+/* Partículas de banana */
+.banana-particle {
+  position: absolute;
+  font-size: 24px;
+  animation: fall 1s linear forwards;
+  pointer-events: none;
+  opacity: 1;
+}
+
+@keyframes fall {
+  0% {
+    transform: translateY(0);
+  }
+  100% {
+    transform: translateY(200px); /* Define a distância de queda */
+  }
+}
+
+.banana-skin-default { color: yellow; }
+.banana-skin-golden { color: gold; }
+.banana-skin-pixel { font-family: "Courier New", Courier, monospace; color: brown; }
+
+/* Efeitos de hover e interação nos botões */
+button:focus {
+  outline: none;
+  box-shadow: 0 0 10px #FFD700; /* Destaque de foco dourado */
+}
+
+/* Adicionando sombras nos botões para maior profundidade */
+button {
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+}
+
+button:hover {
+  background-color: #45a049;
+  transform: scale(1.05); /* Leve aumento ao passar o mouse */
+}
+
+#banana {
+  font-size: 100px;
+  cursor: pointer;
+  transition: transform 0.2s ease, color 0.3s ease;
+}
+
+#banana:hover {
+  transform: scale(1.1);
+}
+
+#eventMessage {
+  position: fixed;
+  top: 10%; /* Subir mais para o topo */
+  left: 50%;
+  transform: translateX(-50%);
+  background: linear-gradient(135deg, rgba(255, 69, 58, 0.9), rgba(255, 0, 0, 0.8)); /* Gradiente para maior impacto */
+  color: white; /* Texto em branco */
+  font-size: 24px;
+  font-weight: bold;
+  padding: 15px 25px;
+  border-radius: 15px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4); /* Sombra mais profunda */
+  animation: fadeIn 0.5s ease-in-out, pulse 1s infinite; /* Animação de pulsar */
+  z-index: 1001; /* Garantir que fique acima de outros elementos */
+  text-align: center; /* Centraliza o texto */
+}
+
+/* Estilo para o countdown */
+#countdown {
+  font-size: 30px;
+  font-weight: bold;
+  color: red;
+  margin-top: 10px;
+  padding: 10px;
+  border-radius: 8px;
+  background-color: rgba(255, 0, 0, 0.7); /* Fundo vermelho com transparência */
+  width: 100px;
+  text-align: center;
+  box-shadow: 0 0 10px rgba(255, 0, 0, 0.5);
+}
+
+
+/* Estilo geral para as notificações */
+.notification {
+  position: fixed;
+  top: 20px; /* No canto superior direito */
+  right: -350px; /* Começa fora da tela */
+  background-color: rgba(40, 40, 40, 0.95);
+  color: white;
+  padding: 15px 20px;
+  font-size: 16px;
+  font-weight: 600;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.6);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  animation: slideInFromRight 0.5s ease-out forwards;
+  max-width: 350px;
+}
+
+
+
+/* Animação de slide da direita */
+@keyframes slideInFromRight {
+  0% {
+    transform: translateX(100%); /* Começa fora da tela */
+  }
+  100% {
+    transform: translateX(0); /* Entra na tela */
+  }
+}
+
+/* Animação de fade-out */
+@keyframes fadeOut {
+  0% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+  100% {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+}
+
+/* Corrigindo bolinhas para serem perfeitas e responsivas */
+.notification .emoji {
+  font-size: 24px;
+  background-color: white; 
+  color: inherit;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%; /* Garante que seja perfeitamente circular */
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
+  transition: transform 0.2s ease-in-out;
+}
+
+/* Ajustando responsividade para telas menores */
+@media (max-width: 768px) {
+  .notification .emoji {
+    width: 30px;
+    height: 30px;
+  }
+
+  .notification {
+    max-width: 300px;
+  }
+}
+
+@media (max-width: 480px) {
+  .notification .emoji {
+    width: 26px;
+    height: 26px;
+  }
+
+  .notification {
+    max-width: 250px;
+  }
+}
+
+/* Cores por tipo */
+.notification.success .emoji {
+  color: #28a745; /* Verde */
+}
+
+.notification.error .emoji {
+  color: #e74c3c; /* Vermelho */
+}
+
+.notification.conquest .emoji {
+  color: #f1c40f; /* Amarelo */
+}
+
+.notification.warning .emoji {
+  color: #ffa500; /* Laranja */
+}
+
+/* Fundo com base no tipo da mensagem */
+.notification.success {
+  background-color: #28a745;
+}
+
+.notification.error {
+  background-color: #e74c3c;
+}
+
+.notification.conquest {
+  background-color: #f1c40f;
+}
+
+.notification.warning {
+  background-color: #ffa500;
+}
+
+/* Container para a chuva de bananas */
+#banana-rain-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none; /* Evita que o usuário interaja com a chuva */
+  z-index: 9998;
+}
+
+/* Animação da chuva de bananas */
+@keyframes fall {
+  0% {
+    transform: translateY(-100px); /* Começa fora da tela */
+  }
+  100% {
+    transform: translateY(100vh); /* Vai até o fundo da tela */
+  }
+}
+
+/* Estilo dos emojis caindo */
+.banana-emoji {
+  position: absolute;
+  font-size: 30px; /* Tamanho dos emojis */
+  animation: fall linear infinite;
+  opacity: 1;
+  animation-duration: 3s; /* Duração da queda */
+  animation-timing-function: ease-in;
+}
+
+
+
+/* Botão "Red_CEO4 Duel" (mesmo tamanho da Leaderboard e responsivo) */
+#red-ceo4-button {
+  position: fixed;
+  bottom: 15px;
+  left: 1px;
+  padding: 12px 24px;
+  font-size: 16px;
+  font-weight: bold;
+  border-radius: 12px;
+  background: linear-gradient(to right, #FF0000, #FFD700);
+  color: white;
+  border: 2px solid #ffffff;
+  cursor: pointer;
+  box-shadow: 0 5px 15px rgba(0, 255, 127, 0.7), 0 0 20px #8B00FF;
+  transition: all 0.3s ease;
+}
+
+/* Efeito no hover */
+#red-ceo4-button:hover {
+  background: linear-gradient(to right, #FF6347, #FF7F50);
+  transform: scale(1.1);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+}
+
+/* Efeito no clique */
+#red-ceo4-button:active {
+  transform: scale(0.95);
+  background: #FF4500;
+}
+
+/* Desabilitado durante cooldown */
+#red-ceo4-button.cooldown {
+  background: #aaaaaa;
+  color: #666666;
+  cursor: not-allowed;
+  box-shadow: none;
+  position: relative;
+}
+
+/* Contagem do cooldown exibida no botão */
+#red-ceo4-button.cooldown::after {
+  content: attr(data-cooldown);
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 14px;
+  color: #fff;
+  font-weight: bold;
+}
+
+/* Tela preta do evento Red_CEO4 */
+#red-ceo4-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.85);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  z-index: 1000;
+  animation: slideIn 0.4s ease-out;
+  font-family: 'Arial', sans-serif;
+}
+
+/* Título do evento */
+#red-ceo4-overlay h1 {
+  font-size: 36px;
+  color: #FFD700;
+  text-shadow: 0 0 8px #FF4500;
+  margin-bottom: 10px;
+}
+
+/* Texto descritivo */
+#red-ceo4-overlay p {
+  font-size: 18px;
+  color: white;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+/* Botões da tela de evento com responsividade */
+#red-ceo4-overlay button {
+  padding: 10px 20px;
+  font-size: 16px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.3s ease;
+}
+
+#red-yes {
+  background: linear-gradient(to right, #32CD32, #3CB371);
+  color: white;
+  box-shadow: 0 4px 8px rgba(50, 205, 50, 0.6);
+}
+
+#red-yes:hover {
+  transform: scale(1.1);
+  box-shadow: 0 8px 15px rgba(50, 205, 50, 0.8);
+}
+
+#red-no {
+  background: linear-gradient(to right, #FF6347, #FF4500);
+  color: white;
+  box-shadow: 0 4px 8px rgba(255, 99, 71, 0.6);
+}
+
+#red-no:hover {
+  transform: scale(1.1);
+  box-shadow: 0 8px 15px rgba(255, 99, 71, 0.8);
+}
+
+/* Animação do slide de fora da tela */
+@keyframes slideIn {
+  0% {
+    transform: translateX(100%) translateY(0);
+    opacity: 0;
+  }
+  100% {
+    transform: translateX(0) translateY(0);
+    opacity: 1;
+  }
+}
+
+/* Responsividade para dispositivos menores */
+@media (max-width: 768px) {
+  #red-ceo4-button {
+    font-size: 14px;
+    padding: 10px 20px;
+  }
+
+  #red-ceo4-overlay h1 {
+    font-size: 30px;
+  }
+
+  #red-ceo4-overlay p {
+    font-size: 16px;
+  }
+
+  #red-yes,
+  #red-no {
+    font-size: 14px;
+  }
+}
+
+.rebirth-emoji {
+  will-change: top; /* Garante que apenas a posição vertical é animada */
+  pointer-events: none; /* Impede que o usuário interaja com os emojis */
+}
+
+
+/* Botão da Máquina Caça-níqueis */
+#slot-machine-button {
+  position: fixed;
+  bottom: 15px; /* Ajustado para não encostar no botão da leaderboard */
+  right: 2px;
+  padding: 12px 22px;
+  font-size: 16px;
+  font-weight: bold;
+  border-radius: 12px;
+  background: linear-gradient(to right, #00FF7F, #8A2BE2);
+  color: white;
+  border: 2px solid #ffffff;
+  cursor: pointer;
+  box-shadow: 0 5px 15px rgba(0, 255, 127, 0.7), 0 0 20px #00FF7F;
+  transition: transform 0.2s ease, box-shadow 0.4s ease;
+}
+
+#slot-machine-button:hover {
+  transform: scale(1.1);
+  box-shadow: 0 0 30px #00FF7F, 0 6px 15px rgba(0, 255, 127, 0.7);
+}
+
+/* Overlay da Máquina Caça-níqueis */
+#slot-machine-overlay {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(circle, rgba(0, 0, 0, 0.9), rgba(10, 10, 50, 0.9));
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  animation: fadeIn 0.6s ease-in-out;
+}
+
+/* Máquina Caça-níqueis */
+.slot-machine {
+  background: linear-gradient(145deg, #1e1e2f, #2a2a45);
+  border: 5px solid #00FF7F;
+  border-radius: 25px;
+  padding: 30px 50px;
+  box-shadow: 0 8px 20px rgba(0, 255, 127, 0.7), 0 0 30px #00FF7F;
+  max-width: 500px;
+  width: 90%;
+  text-align: center;
+}
+
+/* Título com tema neon */
+.slot-machine h2 {
+  font-size: 36px;
+  color: #00FF7F;
+  text-shadow: 0 0 20px #00FF7F, 0 0 40px #8A2BE2;
+  margin-bottom: 20px;
+}
+
+/* Estilo para os rolos da máquina */
+.slot-machine .reels {
+  display: flex;
+  justify-content: space-around;
+  font-size: 50px;
+  margin-bottom: 20px;
+  gap: 15px;
+  color: #fff;
+}
+
+.slot-machine .reels span {
+  display: inline-block;
+  width: 80px;
+  height: 80px;
+  background: linear-gradient(135deg, #333, #555);
+  border: 4px solid #00FF7F;
+  border-radius: 12px;
+  box-shadow: 0 5px 15px rgba(0, 255, 127, 0.5);
+  text-align: center;
+  line-height: 80px;
+  font-size: 40px;
+  color: white;
+  font-weight: bold;
+  transition: transform 0.2s ease-in-out;
+}
+
+.slot-machine .reels span:hover {
+  transform: scale(1.2);
+  box-shadow: 0 0 20px #8A2BE2, 0 6px 15px rgba(0, 255, 127, 0.7);
+}
+
+/* Botões da Slot Machine */
+.slot-machine button {
+  padding: 15px 25px;
+  font-size: 18px;
+  background: linear-gradient(to right, #00FF7F, #8A2BE2);
+  color: white;
+  border: none;
+  border-radius: 15px;
+  cursor: pointer;
+  box-shadow: 0 4px 15px rgba(0, 255, 127, 0.7);
+  transition: transform 0.3s ease, box-shadow 0.4s ease;
+}
+
+.slot-machine button:hover {
+  transform: scale(1.1);
+  box-shadow: 0 0 30px #8A2BE2, 0 8px 15px rgba(0, 255, 127, 0.7);
+}
+
+/* Animações */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Responsividade para dispositivos móveis */
+@media (max-width: 768px) {
+  #slot-machine-button {
+    font-size: 16px;
+  }
+
+  .slot-machine {
+    padding: 20px 30px;
+  }
+
+  .slot-machine h2 {
+    font-size: 28px;
+  }
+
+  .reels {
+    font-size: 40px;
+  }
+
+  .reels span {
+    width: 60px;
+    height: 60px;
+    font-size: 30px;
+    line-height: 60px;
+  }
+}
+
+@media (max-width: 480px) {
+  #slot-machine-button {
+    font-size: 14px;
+  }
+
+  .slot-machine h2 {
+    font-size: 24px;
+  }
+
+  .reels {
+    font-size: 36px;
+  }
+
+  .reels span {
+    width: 50px;
+    height: 50px;
+    font-size: 24px;
+    line-height: 50px;
+  }
+}
+
+
+/* Botão do Present Hunt */
+#present-hunt-button {
+  position: fixed;
+  bottom: 67px; /* Ajustado para não encostar no botão da leaderboard */
+  left: 1px;
+  padding: 12px 22px;
+  font-size: 16px;
+  font-weight: bold;
+  border-radius: 12px;
+  background: linear-gradient(to right, #FF0000, #00FF00, #008000);
+  color: white;
+  border: 2px solid #ffffff;
+  cursor: pointer;
+  box-shadow: 0 5px 15px rgba(0, 255, 127, 0.7), 0 0 20px #00FF7F;
+  transition: transform 0.2s ease, box-shadow 0.4s ease;
+}
+
+#present-hunt-button:hover:not(.disabled) {
+  background: linear-gradient(to right, #FFA500, #FF6347); /* Gradiente mais intenso */
+  transform: scale(1.1);
+  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.3);
+}
+
+#present-hunt-button:active:not(.disabled) {
+  transform: scale(0.95);
+}
+
+/* Botão Desativado */
+#present-hunt-button.disabled {
+  background: #cccccc;
+  cursor: not-allowed;
+  box-shadow: none;
+}
