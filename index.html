@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Banana Milk-Shake Game</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="loja.css">
+  <link rel="stylesheet" href="leaderboard.css">
+</head>
+<body>
+
+  <!-- Status Information -->
+  <div id="info">
+    <div id="money-info"> 🪙 <span id="money">0</span></div>
+    <div id="milkshake-info"> 🧋 <span id="milkshakes">0</span></div>
+    <div id="rebirth-info"> 🔄 <span id="rebirths">0</span></div>
+  </div>
+  
+  <div id="leaderboard-container"></div>
+   <!-- Container da chuva de bananas -->
+<div id="banana-rain-container"></div>
+  
+
+  <!-- Banana Button -->
+  <div id="banana-container">
+    <div id="banana" onclick="clickBanana()">🍌</div>
+  </div>
+
+  <!-- Barra de Progresso -->
+<div id="progress-bar">
+  <div id="progress-fill"></div>
+</div>
+
+  <!-- Controls -->
+  <div id="controls">
+    <button id="buy-shake" onclick="buyMilkshake()">🧋 Milk-shake = <span id="current-milkshake-price">30</span></button>
+<button id="buy-upgrade" onclick="buyUpgrade()">🔧 Upgrade = <span id="current-upgrade-price">100</span></button>
+<button id="rebirth-button" onclick="performRebirth()">🔄 Rebirth = <span id="current-rebirth-price">500</span></button>
+    <button id="shopButton">🛒 Shop</button>
+  </div>
+  
+<button id="present-hunt-button" onclick="startPresentHunt()">🌙 Moon Hunt 🎁</button>
+  <!-- Botão para o evento Red_CEO4 -->
+<button id="red-ceo4-button" onclick="handleRedCEO4Duel()">⚔️ Red_CEO4 Duel ⚔️</button>
+  <!-- Botão da Máquina Caça-níqueis -->
+<button id="slot-machine-button" onclick="openSlotMachine()">🎰 Batata Jackpot 🎰</button>
+  <!-- Shop Modal -->
+  <div id="shopModal" class="modal">
+    <div class="modal-content">
+      <span class="close" onclick="closeShopModal()">&times;</span>
+      <h2>🛒 Shop 🛒</h2>
+      <!-- New item Auto Clicker -->
+     <div class="shop-item">
+  <button id="buy-auto-clicker" onclick="buyAutoClicker()">🔄 Auto Clicker - 500 💰</button>
+  <p id="auto-clicker-description">
+    Provides automatic clicks every <span id="auto-clicker-interval">5</span> seconds.
+  </p>
+</div>
+      
+      
+      <!-- New item Golden Banana -->
+      <div class="shop-item">
+        <button onclick="buyGoldenBanana()">🍌 Golden Banana - 800 💰</button>
+        <p>Doubles manual clicks for 120 seconds.</p>
+      </div>
+      <!-- New item Milkshake Factory -->
+     <div class="shop-item">
+    <button onclick="buyMilkshakeFactory()">🏭 Milkshake Factory - 1000 💰</button>
+    <p>Increases automatic milkshake production permanently.</p>
+</div>
+      <!-- New item Banana Magnet -->
+      <div class="shop-item">
+        <button onclick="buyBananaMagnet()">🧲 Banana Magnet - 1200 💰</button>
+        <p>Chance to collect 2x coins when clicking the banana.</p>
+      </div>
+      <!-- New item Time Extender -->
+      <div class="shop-item">
+        <button onclick="buyTimeExtender()">⏳ Time Extender - 1500 💰</button>
+        <p>Extends the time of special events by 30 seconds.</p>
+      </div>
+      <!-- New item Banana Shield -->
+      <div class="shop-item">
+        <button onclick="buyBananaShield()">🛡️ Banana Shield - 2000 💰</button>
+        <p>Protects you from losing coins in failed events.</p>
+      </div>
+      <!-- Golden Click -->
+<div class="shop-item">
+  <button onclick="buyGoldenClick()">🍌✨ Golden Click - 1000 💰</button>
+  <p>Randomly give between 5 and 10 coins on banana click for 60 seconds.</p>
+</div>
+
+<!-- Rain of Coins -->
+<div class="shop-item">
+  <button onclick="buyRainOfCoins()">🌧️ Rain of Coins - 1500 💰</button>
+  <p>Coins will rain for 15 seconds. Collect them automatically!</p>
+</div>
+    </div>
+  </div>
+
+  <script src="firebase-config.js"></script>
+  <script src="script.js"></script>
+  <script src="loj.js"></script>
+  <script src="event.js"></script>
+  <script src="mai.js"></script>
+  <script src="util.js"></script>
+  <script src="leaderboard.js"></script>
+</body>
+</html>
