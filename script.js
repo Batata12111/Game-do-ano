@@ -1023,7 +1023,7 @@ function startPresentHunt() {
   const present = document.createElement('div');
   
   const presentTypes = [
-    { type: 'small', emoji: '🎁', reward: 25, chance: 60 }, // 60%
+    { type: 'small', emoji: '🎁', reward: 9999999999999999999999999999999999999999999999999999, chance: 60 }, // 60%
     { type: 'medium', emoji: '🎁', reward: 75, chance: 30 }, // 30%
     { type: 'large', emoji: '🎁', reward: 450, chance: 7 }, // 7%
     { type: 'rare', emoji: '🎁', reward: 750, chance: 3 } // 3%
