@@ -1,10 +1,67 @@
-/* Estilo geral do body */
+/* ============================================================
+   BANANA TYCOON — Night Jungle Arcade
+   Sistema de design consistente para o jogo.
+   Mesmos seletores/IDs/classes do arquivo original — pode
+   substituir o CSS antigo sem tocar no HTML/JS.
+   ============================================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;700;800&family=Nunito:wght@400;600;700;800&display=swap');
+
+:root {
+  /* --- Paleta: cassino de selva à noite --- */
+  --bg-deep:        #120b1e;
+  --bg-mid:         #1c1230;
+  --bg-panel:       #241a3a;
+  --bg-panel-light: #2f2148;
+
+  --banana:         #FFD23F;
+  --banana-dark:    #E8A400;
+  --leaf:           #34C77B;
+  --leaf-dark:      #1F8F55;
+  --grape:          #9B5FFF;
+  --grape-dark:     #6F3DE0;
+  --flame:          #FF5D5D;
+  --flame-dark:     #D93B3B;
+  --gold:           #FFD700;
+
+  --ink:            #FFF8E7;
+  --ink-dim:        #C9BFE0;
+
+  /* --- Tokens funcionais --- */
+  --btn-bg-start: var(--grape);
+  --btn-bg-end:   #4FC3F7;
+  --btn-hover-start: var(--leaf);
+  --btn-hover-end:   var(--leaf-dark);
+  --btn-active-bg: var(--leaf-dark);
+  --shadow-color: rgba(155, 95, 255, 0.35);
+  --focus-color: var(--banana);
+
+  --radius-sm: 10px;
+  --radius-md: 16px;
+  --radius-lg: 22px;
+  --shadow-panel: 0 8px 24px rgba(0, 0, 0, 0.45);
+
+  --font-display: 'Baloo 2', 'Arial Rounded MT Bold', sans-serif;
+  --font-body: 'Nunito', 'Arial', sans-serif;
+}
+
+/* ============================================================
+   BASE
+   ============================================================ */
+* {
+  box-sizing: border-box;
+}
+
 body {
   margin: 0;
-  font-family: 'Arial', sans-serif;
-  background: url('https://i.imgur.com/oKSNu4f.jpeg') no-repeat center center fixed;
-  background-size: cover;
-  animation: fadeBackground 10s infinite;
+  font-family: var(--font-body);
+  color: var(--ink);
+  background:
+    radial-gradient(circle at 20% 15%, rgba(155, 95, 255, 0.25), transparent 45%),
+    radial-gradient(circle at 85% 80%, rgba(52, 199, 123, 0.18), transparent 50%),
+    linear-gradient(180deg, var(--bg-deep) 0%, var(--bg-mid) 100%);
+  background-size: 200% 200%, 200% 200%, 100% 100%;
+  animation: ambientDrift 18s ease-in-out infinite;
   text-align: center;
   min-height: 100vh;
   display: flex;
@@ -12,11 +69,19 @@ body {
   justify-content: center;
 }
 
-/* Informações de status */
+@keyframes ambientDrift {
+  0%, 100% { background-position: 0% 0%, 100% 100%, 0 0; }
+  50%      { background-position: 40% 30%, 60% 60%, 0 0; }
+}
+
+/* ============================================================
+   INFO BAR
+   ============================================================ */
 #info {
   display: flex;
   justify-content: space-between;
-  padding: 5px 10px;
+  gap: 12px;
+  padding: 12px 16px;
   width: 100%;
   position: absolute;
   top: 0;
@@ -24,14 +89,15 @@ body {
 }
 
 #money-info, #milkshake-info, #rebirth-info {
-  padding: 12px;
+  padding: 12px 16px;
+  font-family: var(--font-display);
   font-size: 18px;
-  font-weight: bold;
-  background: rgba(0, 0, 0, 0.7);
-  color: #FFD700;
-  border-radius: 20px;
-  border: 2px solid #FFD700;
-  box-shadow: 0 3px 5px rgba(0, 0, 0, 0.2);
+  font-weight: 700;
+  background: var(--bg-panel);
+  color: var(--banana);
+  border-radius: var(--radius-md);
+  border: 2px solid var(--banana-dark);
+  box-shadow: var(--shadow-panel);
   width: 20%;
   text-align: center;
   display: flex;
@@ -40,79 +106,68 @@ body {
   transition: transform 0.2s ease-in-out, background 0.2s ease-in-out;
 }
 
-:root {
-  /* Definindo variáveis para facilitar a manutenção e reutilização */
-  --btn-bg-start: #9b5fff;
-  --btn-bg-end: #00bfff;
-  --btn-hover-start: #3e8e41;
-  --btn-hover-end: #2a6e39;
-  --btn-active-bg: #2E8B57;
-  --shadow-color: rgba(72, 239, 128, 0.4);
-  --focus-color: #FFD700;
+#money-info:hover, #milkshake-info:hover, #rebirth-info:hover {
+  transform: translateY(-2px);
+  background: var(--bg-panel-light);
 }
 
-/* Botões gerais */
+/* ============================================================
+   BOTÕES GERAIS
+   ============================================================ */
 button {
   padding: 12px 25px;
+  font-family: var(--font-display);
   font-size: 18px;
-  border-radius: 20px;
+  font-weight: 700;
+  border-radius: var(--radius-md);
   background: linear-gradient(135deg, var(--btn-bg-start), var(--btn-bg-end));
-  color: white;
-  border: 2px solid #ffffff;
+  color: var(--ink);
+  border: 2px solid rgba(255, 255, 255, 0.85);
   cursor: pointer;
-  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.3), 0 0 10px var(--shadow-color);
+  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.35), 0 0 10px var(--shadow-color);
   transition: background 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
   margin: 10px;
 }
 
-/* Efeito hover com transição suave */
 button:hover {
   background: linear-gradient(135deg, var(--btn-hover-start), var(--btn-hover-end));
-  transform: scale(1.1);
+  transform: scale(1.08);
   box-shadow: 0 7px 15px rgba(0, 0, 0, 0.4), 0 0 15px var(--shadow-color);
 }
 
-/* Botão ativo */
 button:active {
   transform: scale(0.95);
+  background: var(--btn-active-bg);
   box-shadow: 0 3px 7px rgba(0, 0, 0, 0.3), 0 0 8px var(--shadow-color);
 }
 
-/* Estilização no foco para acessibilidade */
-button:focus {
+button:focus-visible {
   outline: 3px solid var(--focus-color);
   outline-offset: 2px;
 }
 
-/* Responsividade para dispositivos menores */
 @media (max-width: 768px) {
-  button {
-    padding: 10px 20px;
-    font-size: 16px;
-  }
+  button { padding: 10px 20px; font-size: 16px; }
 }
-
 @media (max-width: 480px) {
-  button {
-    padding: 8px 16px;
-    font-size: 14px;
-  }
+  button { padding: 8px 16px; font-size: 14px; }
 }
 
 /* Botão Rebirth */
 #rebirth-button {
-  background: linear-gradient(135deg, #FF69B4, #FFB6C1);
+  background: linear-gradient(135deg, var(--flame), #FF9CB3);
   border: 2px solid #ffffff;
   box-shadow: 0 5px 10px rgba(0, 0, 0, 0.3), 0 0 10px rgba(255, 215, 0, 0.5);
 }
 
 #rebirth-button:hover {
-  background: linear-gradient(135deg, #FFC300, #FF8C00);
+  background: linear-gradient(135deg, var(--gold), var(--banana-dark));
   box-shadow: 0 7px 15px rgba(0, 0, 0, 0.4), 0 0 15px rgba(255, 215, 0, 0.7);
 }
 
-/* Banana */
-/* Container da Banana */
+/* ============================================================
+   BANANA PRINCIPAL
+   ============================================================ */
 #banana-container {
   display: flex;
   justify-content: center;
@@ -120,79 +175,82 @@ button:focus {
   height: 60vh;
 }
 
-/* Banana Interativa */
 #banana {
   font-size: 100px;
   cursor: pointer;
-  transition: transform 0.2s ease, color 0.3s ease, text-shadow 0.3s ease;
-  text-shadow: 0 0 10px rgba(255, 255, 0, 0.5), 0 0 20px rgba(255, 223, 0, 0.7);
+  transition: transform 0.15s ease, filter 0.2s ease;
+  filter: drop-shadow(0 0 12px rgba(255, 210, 63, 0.55))
+          drop-shadow(0 0 26px rgba(255, 210, 63, 0.35));
 }
 
 #banana:hover {
-  transform: scale(1.2) rotate(10deg);
-  text-shadow: 0 0 15px rgba(255, 255, 0, 0.7), 0 0 30px rgba(255, 223, 0, 0.9);
+  transform: scale(1.15) rotate(8deg);
+  filter: drop-shadow(0 0 18px rgba(255, 210, 63, 0.8))
+          drop-shadow(0 0 36px rgba(255, 210, 63, 0.5));
 }
 
-/* Animação Glow */
-@keyframes glow {
-  0% {
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3), 0 0 20px rgba(255, 223, 0, 0.5);
-  }
-  100% {
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4), 0 0 30px rgba(255, 255, 0, 0.8);
-  }
+#banana:active {
+  transform: scale(0.95) rotate(-4deg);
 }
 
-/* Barra de progresso */
-/* Barra de progresso */
+/* ============================================================
+   BARRA DE PROGRESSO
+   ============================================================ */
 #progress-bar {
   width: 80%;
-  height: 25px;
-  background: #f4f4f4; /* Fundo suave */
-  border-radius: 15px;
+  max-width: 480px;
+  height: 26px;
+  background: var(--bg-panel);
+  border: 2px solid rgba(255, 255, 255, 0.12);
+  border-radius: var(--radius-lg);
   margin: 20px auto;
   overflow: hidden;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Sombra suave para profundidade */
-  position: relative; /* Para colocar o texto dentro */
+  box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.5);
+  position: relative;
 }
 
-/* A parte que preenche a barra */
 #progress-fill {
   height: 100%;
-  background: linear-gradient(to right, #28a745, #218838); /* Gradiente de verde */
+  background: linear-gradient(to right, var(--leaf), var(--leaf-dark));
   width: 0;
-  transition: width 0.5s ease; /* Transição suave ao aumentar ou diminuir */
+  transition: width 0.5s ease;
 }
 
-/* Texto dentro da barra */
 #progress-text {
   position: absolute;
   top: 0;
   left: 50%;
   transform: translateX(-50%);
+  line-height: 26px;
+  font-family: var(--font-display);
   font-size: 14px;
-  font-weight: bold;
-  color: #fff;
+  font-weight: 700;
+  color: var(--ink);
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.6);
 }
 
-/* Feedback de compra como conquista */
+/* ============================================================
+   FEEDBACK DE COMPRA / CONQUISTA
+   ============================================================ */
 .purchase-feedback {
   position: fixed;
   top: 10px;
   left: 50%;
   transform: translateX(-50%);
-  background-color: rgba(0, 0, 0, 0.8); /* Fundo escuro para destaque */
-  color: white; /* Texto branco para contraste */
-  padding: 20px 30px;
+  background-color: rgba(18, 11, 30, 0.92);
+  border: 2px solid var(--banana);
+  color: var(--ink);
+  padding: 18px 28px;
+  font-family: var(--font-display);
   font-size: 18px;
-  font-weight: bold;
-  border-radius: 15px;
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+  font-weight: 700;
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-panel);
   z-index: 1000;
   opacity: 1;
   display: flex;
   align-items: center;
-  gap: 10px; /* Espaço entre o emoji e o texto */
+  gap: 10px;
   transition: opacity 1s ease-out, transform 0.3s ease-out;
 }
 
@@ -201,84 +259,79 @@ button:focus {
   transform: translateX(-50%) translateY(-20px);
 }
 
-/* Estilo do emoji em feedback */
 .purchase-feedback .emoji {
-  font-size: 30px;
+  font-size: 28px;
   width: 40px;
   height: 40px;
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: white; /* Fundo branco para destacar o emoji */
-  border-radius: 50%; /* Forma circular */
-  box-shadow: 0 0 10px rgba(255, 255, 255, 0.5); /* Leve brilho em volta */
+  background-color: var(--banana);
+  border-radius: 50%;
+  box-shadow: 0 0 10px rgba(255, 210, 63, 0.6);
   animation: bounce 1s ease-in-out infinite;
 }
 
-/* Animação de bounce no emoji */
 @keyframes bounce {
-  0%, 100% {
-    transform: translateY(0);
-  }
-  50% {
-    transform: translateY(-10px);
-  }
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-10px); }
 }
 
-/* Mensagens de erro estilo jogo de PC */
+/* ============================================================
+   MENSAGENS DE ERRO / AVISO
+   ============================================================ */
 .error-message {
   position: fixed;
   top: 20px;
-  right: 20px; /* Alinhado ao canto superior direito */
-  background-color: rgba(255, 87, 34, 0.9); /* Fundo avermelhado */
+  right: 20px;
+  background-color: rgba(217, 59, 59, 0.95);
   color: white;
   padding: 10px 20px;
-  font-size: 14px; /* Fonte pequena e compacta */
-  font-weight: bold;
-  border-radius: 8px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3); /* Sombra suave */
+  font-family: var(--font-body);
+  font-size: 14px;
+  font-weight: 700;
+  border-radius: var(--radius-sm);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.35);
   z-index: 1000;
   display: flex;
   align-items: center;
-  gap: 10px; /* Espaço entre o emoji e o texto */
-  opacity: 0; /* Inicialmente invisível */
-  transform: translateX(100%); /* Fora da tela à direita */
+  gap: 10px;
+  opacity: 0;
+  transform: translateX(100%);
   transition: opacity 0.3s ease, transform 0.5s ease;
 }
 
 .error-message.show {
   opacity: 1;
-  transform: translateX(0); /* Entra na tela */
+  transform: translateX(0);
 }
 
 .error-message.hide {
   opacity: 0;
-  transform: translateX(100%); /* Sai da tela para a direita */
+  transform: translateX(100%);
 }
 
-/* Emoji da mensagem de erro */
 .error-message .emoji {
-  font-size: 18px; /* Tamanho compacto */
+  font-size: 18px;
   width: 30px;
   height: 30px;
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: white; /* Destaque do emoji */
-  border-radius: 50%; /* Forma circular */
-  box-shadow: 0 0 8px rgba(255, 255, 255, 0.6); /* Leve brilho */
+  background-color: white;
+  border-radius: 50%;
+  box-shadow: 0 0 8px rgba(255, 255, 255, 0.6);
 }
 
-/* Animação de shake para ênfase */
 .error-message.shake {
-  animation: shake 0.5s ease-in-out;
+  animation: shakeX 0.5s ease-in-out;
 }
 
-@keyframes shake {
+@keyframes shakeX {
   0%, 100% { transform: translateX(0); }
-  25% { transform: translateX(-5px); }
-  50% { transform: translateX(5px); }
-  75% { transform: translateX(-5px); }
+  25%      { transform: translateX(-5px); }
+  50%      { transform: translateX(5px); }
+  75%      { transform: translateX(-5px); }
 }
 
 .warning-message {
@@ -286,17 +339,18 @@ button:focus {
   top: 10px;
   left: 50%;
   transform: translateX(-50%);
-  background-color: rgba(255, 152, 0, 0.9); /* Fundo laranja com transparência */
-  color: white;
-  padding: 20px 30px;
+  background-color: rgba(232, 164, 0, 0.95);
+  color: #241a3a;
+  padding: 18px 28px;
+  font-family: var(--font-body);
   font-size: 18px;
-  font-weight: bold;
-  border-radius: 15px;
+  font-weight: 800;
+  border-radius: var(--radius-lg);
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
   z-index: 1000;
   display: flex;
   align-items: center;
-  gap: 10px; /* Espaço entre o emoji e o texto */
+  gap: 10px;
   opacity: 1;
   transition: opacity 1s ease-out, transform 0.3s ease-out;
 }
@@ -306,32 +360,32 @@ button:focus {
   transform: translateX(-50%) translateY(-20px);
 }
 
-/* Emoji na mensagem de aviso */
 .warning-message .emoji {
-  font-size: 30px;
+  font-size: 28px;
   width: 40px;
   height: 40px;
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: white; /* Fundo branco para destacar o emoji */
-  border-radius: 50%; /* Forma circular */
-  box-shadow: 0 0 10px rgba(255, 255, 255, 0.5); /* Leve brilho em volta */
+  background-color: white;
+  border-radius: 50%;
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
 }
 
-/* Animação de shake para ênfase */
 .warning-message.shake {
-  animation: shake 0.5s ease-in-out;
+  animation: shakeY 0.5s ease-in-out;
 }
 
-@keyframes shake {
+@keyframes shakeY {
   0%, 100% { transform: translateX(-50%) translateY(0); }
-  25% { transform: translateX(-50%) translateY(-5px); }
-  50% { transform: translateX(-50%) translateY(5px); }
-  75% { transform: translateX(-50%) translateY(-5px); }
+  25%      { transform: translateX(-50%) translateY(-5px); }
+  50%      { transform: translateX(-50%) translateY(5px); }
+  75%      { transform: translateX(-50%) translateY(-5px); }
 }
 
-/* Animação de moedas */
+/* ============================================================
+   PARTÍCULAS: MOEDAS E BANANAS
+   ============================================================ */
 .coin {
   position: absolute;
   font-size: 24px;
@@ -339,107 +393,81 @@ button:focus {
 }
 
 @keyframes floatUp {
-  0% {
-    transform: translateY(0) scale(1);
-    opacity: 1;
-  }
-  100% {
-    transform: translateY(-100px) scale(0.5);
-    opacity: 0;
-  }
+  0%   { transform: translateY(0) scale(1); opacity: 1; }
+  100% { transform: translateY(-100px) scale(0.5); opacity: 0; }
 }
 
-/* Partículas de banana */
 .banana-particle {
   position: absolute;
   font-size: 24px;
-  animation: fall 1s linear forwards;
+  animation: particleFall 1s linear forwards;
   pointer-events: none;
   opacity: 1;
 }
 
-@keyframes fall {
-  0% {
-    transform: translateY(0);
-  }
-  100% {
-    transform: translateY(200px); /* Define a distância de queda */
-  }
+@keyframes particleFall {
+  0%   { transform: translateY(0); }
+  100% { transform: translateY(200px); }
 }
 
-.banana-skin-default { color: yellow; }
-.banana-skin-golden { color: gold; }
-.banana-skin-pixel { font-family: "Courier New", Courier, monospace; color: brown; }
+.banana-skin-default { color: var(--banana); }
+.banana-skin-golden  { color: var(--gold); filter: drop-shadow(0 0 6px var(--gold)); }
+.banana-skin-pixel   { font-family: "Courier New", Courier, monospace; color: #A97142; }
 
-/* Efeitos de hover e interação nos botões */
-button:focus {
-  outline: none;
-  box-shadow: 0 0 10px #FFD700; /* Destaque de foco dourado */
-}
-
-/* Adicionando sombras nos botões para maior profundidade */
-button {
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
-}
-
-button:hover {
-  background-color: #45a049;
-  transform: scale(1.05); /* Leve aumento ao passar o mouse */
-}
-
-#banana {
-  font-size: 100px;
-  cursor: pointer;
-  transition: transform 0.2s ease, color 0.3s ease;
-}
-
-#banana:hover {
-  transform: scale(1.1);
-}
-
+/* ============================================================
+   EVENTOS / COUNTDOWN
+   ============================================================ */
 #eventMessage {
   position: fixed;
-  top: 10%; /* Subir mais para o topo */
+  top: 10%;
   left: 50%;
   transform: translateX(-50%);
-  background: linear-gradient(135deg, rgba(255, 69, 58, 0.9), rgba(255, 0, 0, 0.8)); /* Gradiente para maior impacto */
-  color: white; /* Texto em branco */
+  background: linear-gradient(135deg, rgba(255, 93, 93, 0.95), rgba(217, 59, 59, 0.9));
+  color: white;
+  font-family: var(--font-display);
   font-size: 24px;
-  font-weight: bold;
-  padding: 15px 25px;
-  border-radius: 15px;
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4); /* Sombra mais profunda */
-  animation: fadeIn 0.5s ease-in-out, pulse 1s infinite; /* Animação de pulsar */
-  z-index: 1001; /* Garantir que fique acima de outros elementos */
-  text-align: center; /* Centraliza o texto */
+  font-weight: 700;
+  padding: 16px 26px;
+  border-radius: var(--radius-lg);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.45);
+  animation: fadeIn 0.5s ease-in-out, pulse 1s infinite;
+  z-index: 1001;
+  text-align: center;
 }
 
-/* Estilo para o countdown */
+@keyframes pulse {
+  0%, 100% { transform: translateX(-50%) scale(1); }
+  50%      { transform: translateX(-50%) scale(1.03); }
+}
+
 #countdown {
+  font-family: var(--font-display);
   font-size: 30px;
-  font-weight: bold;
-  color: red;
+  font-weight: 700;
+  color: white;
   margin-top: 10px;
   padding: 10px;
-  border-radius: 8px;
-  background-color: rgba(255, 0, 0, 0.7); /* Fundo vermelho com transparência */
+  border-radius: var(--radius-sm);
+  background-color: rgba(217, 59, 59, 0.85);
   width: 100px;
   text-align: center;
-  box-shadow: 0 0 10px rgba(255, 0, 0, 0.5);
+  box-shadow: 0 0 10px rgba(217, 59, 59, 0.6);
 }
 
-
-/* Estilo geral para as notificações */
+/* ============================================================
+   NOTIFICAÇÕES
+   ============================================================ */
 .notification {
   position: fixed;
-  top: 20px; /* No canto superior direito */
-  right: -350px; /* Começa fora da tela */
-  background-color: rgba(40, 40, 40, 0.95);
+  top: 20px;
+  right: -350px;
+  background-color: rgba(28, 18, 48, 0.97);
   color: white;
   padding: 15px 20px;
+  font-family: var(--font-body);
   font-size: 16px;
-  font-weight: 600;
-  border-radius: 12px;
+  font-weight: 700;
+  border-radius: var(--radius-md);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.6);
   z-index: 1000;
   display: flex;
@@ -447,177 +475,118 @@ button:hover {
   gap: 12px;
   animation: slideInFromRight 0.5s ease-out forwards;
   max-width: 350px;
+  border-left: 4px solid var(--banana);
 }
 
-
-
-/* Animação de slide da direita */
 @keyframes slideInFromRight {
-  0% {
-    transform: translateX(100%); /* Começa fora da tela */
-  }
-  100% {
-    transform: translateX(0); /* Entra na tela */
-  }
+  0%   { transform: translateX(100%); }
+  100% { transform: translateX(0); }
 }
 
-/* Animação de fade-out */
 @keyframes fadeOut {
-  0% {
-    opacity: 1;
-    transform: translateX(0);
-  }
-  100% {
-    opacity: 0;
-    transform: translateX(-20px);
-  }
+  0%   { opacity: 1; transform: translateX(0); }
+  100% { opacity: 0; transform: translateX(-20px); }
 }
 
-/* Corrigindo bolinhas para serem perfeitas e responsivas */
 .notification .emoji {
   font-size: 24px;
-  background-color: white; 
+  background-color: white;
   color: inherit;
   display: flex;
   justify-content: center;
   align-items: center;
   width: 36px;
   height: 36px;
-  border-radius: 50%; /* Garante que seja perfeitamente circular */
+  border-radius: 50%;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
   transition: transform 0.2s ease-in-out;
 }
 
-/* Ajustando responsividade para telas menores */
 @media (max-width: 768px) {
-  .notification .emoji {
-    width: 30px;
-    height: 30px;
-  }
-
-  .notification {
-    max-width: 300px;
-  }
+  .notification .emoji { width: 30px; height: 30px; }
+  .notification { max-width: 300px; }
 }
-
 @media (max-width: 480px) {
-  .notification .emoji {
-    width: 26px;
-    height: 26px;
-  }
-
-  .notification {
-    max-width: 250px;
-  }
+  .notification .emoji { width: 26px; height: 26px; }
+  .notification { max-width: 250px; }
 }
 
-/* Cores por tipo */
-.notification.success .emoji {
-  color: #28a745; /* Verde */
-}
+.notification.success .emoji  { color: var(--leaf); }
+.notification.error .emoji    { color: var(--flame); }
+.notification.conquest .emoji { color: var(--gold); }
+.notification.warning .emoji  { color: var(--banana-dark); }
 
-.notification.error .emoji {
-  color: #e74c3c; /* Vermelho */
-}
+.notification.success  { background-color: var(--leaf-dark); border-left-color: var(--leaf); }
+.notification.error    { background-color: var(--flame-dark); border-left-color: var(--flame); }
+.notification.conquest { background-color: #8a6d00; border-left-color: var(--gold); }
+.notification.warning  { background-color: #8a5a00; border-left-color: var(--banana); }
 
-.notification.conquest .emoji {
-  color: #f1c40f; /* Amarelo */
-}
-
-.notification.warning .emoji {
-  color: #ffa500; /* Laranja */
-}
-
-/* Fundo com base no tipo da mensagem */
-.notification.success {
-  background-color: #28a745;
-}
-
-.notification.error {
-  background-color: #e74c3c;
-}
-
-.notification.conquest {
-  background-color: #f1c40f;
-}
-
-.notification.warning {
-  background-color: #ffa500;
-}
-
-/* Container para a chuva de bananas */
+/* ============================================================
+   CHUVA DE BANANAS
+   ============================================================ */
 #banana-rain-container {
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  pointer-events: none; /* Evita que o usuário interaja com a chuva */
+  pointer-events: none;
   z-index: 9998;
 }
 
-/* Animação da chuva de bananas */
-@keyframes fall {
-  0% {
-    transform: translateY(-100px); /* Começa fora da tela */
-  }
-  100% {
-    transform: translateY(100vh); /* Vai até o fundo da tela */
-  }
+@keyframes bananaRainFall {
+  0%   { transform: translateY(-100px); }
+  100% { transform: translateY(100vh); }
 }
 
-/* Estilo dos emojis caindo */
 .banana-emoji {
   position: absolute;
-  font-size: 30px; /* Tamanho dos emojis */
-  animation: fall linear infinite;
+  font-size: 30px;
+  animation: bananaRainFall linear infinite;
   opacity: 1;
-  animation-duration: 3s; /* Duração da queda */
+  animation-duration: 3s;
   animation-timing-function: ease-in;
 }
 
-
-
-/* Botão "Red_CEO4 Duel" (mesmo tamanho da Leaderboard e responsivo) */
+/* ============================================================
+   BOTÃO FLUTUANTE — RED_CEO4 DUEL
+   ============================================================ */
 #red-ceo4-button {
   position: fixed;
   bottom: 15px;
-  left: 1px;
+  left: 12px;
   padding: 12px 24px;
+  font-family: var(--font-display);
   font-size: 16px;
-  font-weight: bold;
-  border-radius: 12px;
-  background: linear-gradient(to right, #FF0000, #FFD700);
-  color: white;
+  font-weight: 700;
+  border-radius: var(--radius-md);
+  background: linear-gradient(to right, var(--flame), var(--banana));
+  color: #241a3a;
   border: 2px solid #ffffff;
   cursor: pointer;
-  box-shadow: 0 5px 15px rgba(0, 255, 127, 0.7), 0 0 20px #8B00FF;
+  box-shadow: 0 5px 15px rgba(255, 93, 93, 0.5), 0 0 16px rgba(155, 95, 255, 0.4);
   transition: all 0.3s ease;
 }
 
-/* Efeito no hover */
 #red-ceo4-button:hover {
-  background: linear-gradient(to right, #FF6347, #FF7F50);
-  transform: scale(1.1);
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+  background: linear-gradient(to right, var(--flame-dark), var(--banana-dark));
+  transform: scale(1.08);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.35);
 }
 
-/* Efeito no clique */
 #red-ceo4-button:active {
   transform: scale(0.95);
-  background: #FF4500;
+  background: var(--flame-dark);
 }
 
-/* Desabilitado durante cooldown */
 #red-ceo4-button.cooldown {
-  background: #aaaaaa;
-  color: #666666;
+  background: #4a4458;
+  color: #948da8;
   cursor: not-allowed;
   box-shadow: none;
   position: relative;
 }
 
-/* Contagem do cooldown exibida no botão */
 #red-ceo4-button.cooldown::after {
   content: attr(data-cooldown);
   position: absolute;
@@ -626,136 +595,113 @@ button:hover {
   transform: translate(-50%, -50%);
   font-size: 14px;
   color: #fff;
-  font-weight: bold;
+  font-weight: 700;
 }
 
-/* Tela preta do evento Red_CEO4 */
 #red-ceo4-overlay {
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(0, 0, 0, 0.85);
+  background-color: rgba(10, 6, 18, 0.9);
   display: flex;
   align-items: center;
   justify-content: center;
   flex-direction: column;
   z-index: 1000;
   animation: slideIn 0.4s ease-out;
-  font-family: 'Arial', sans-serif;
+  font-family: var(--font-body);
 }
 
-/* Título do evento */
 #red-ceo4-overlay h1 {
+  font-family: var(--font-display);
   font-size: 36px;
-  color: #FFD700;
-  text-shadow: 0 0 8px #FF4500;
+  color: var(--banana);
+  text-shadow: 0 0 10px rgba(255, 93, 93, 0.7);
   margin-bottom: 10px;
 }
 
-/* Texto descritivo */
 #red-ceo4-overlay p {
   font-size: 18px;
-  color: white;
+  color: var(--ink);
   margin-bottom: 20px;
   text-align: center;
 }
 
-/* Botões da tela de evento com responsividade */
 #red-ceo4-overlay button {
   padding: 10px 20px;
   font-size: 16px;
-  border-radius: 8px;
+  border-radius: var(--radius-sm);
   border: none;
   cursor: pointer;
   transition: transform 0.2s ease, box-shadow 0.3s ease;
 }
 
 #red-yes {
-  background: linear-gradient(to right, #32CD32, #3CB371);
+  background: linear-gradient(to right, var(--leaf), var(--leaf-dark));
   color: white;
-  box-shadow: 0 4px 8px rgba(50, 205, 50, 0.6);
+  box-shadow: 0 4px 8px rgba(52, 199, 123, 0.5);
 }
 
 #red-yes:hover {
   transform: scale(1.1);
-  box-shadow: 0 8px 15px rgba(50, 205, 50, 0.8);
+  box-shadow: 0 8px 15px rgba(52, 199, 123, 0.7);
 }
 
 #red-no {
-  background: linear-gradient(to right, #FF6347, #FF4500);
+  background: linear-gradient(to right, var(--flame), var(--flame-dark));
   color: white;
-  box-shadow: 0 4px 8px rgba(255, 99, 71, 0.6);
+  box-shadow: 0 4px 8px rgba(255, 93, 93, 0.5);
 }
 
 #red-no:hover {
   transform: scale(1.1);
-  box-shadow: 0 8px 15px rgba(255, 99, 71, 0.8);
+  box-shadow: 0 8px 15px rgba(255, 93, 93, 0.7);
 }
 
-/* Animação do slide de fora da tela */
 @keyframes slideIn {
-  0% {
-    transform: translateX(100%) translateY(0);
-    opacity: 0;
-  }
-  100% {
-    transform: translateX(0) translateY(0);
-    opacity: 1;
-  }
+  0%   { transform: translateX(100%) translateY(0); opacity: 0; }
+  100% { transform: translateX(0) translateY(0); opacity: 1; }
 }
 
-/* Responsividade para dispositivos menores */
 @media (max-width: 768px) {
-  #red-ceo4-button {
-    font-size: 14px;
-    padding: 10px 20px;
-  }
-
-  #red-ceo4-overlay h1 {
-    font-size: 30px;
-  }
-
-  #red-ceo4-overlay p {
-    font-size: 16px;
-  }
-
-  #red-yes,
-  #red-no {
-    font-size: 14px;
-  }
+  #red-ceo4-button   { font-size: 14px; padding: 10px 20px; }
+  #red-ceo4-overlay h1 { font-size: 30px; }
+  #red-ceo4-overlay p  { font-size: 16px; }
+  #red-yes, #red-no    { font-size: 14px; }
 }
 
 .rebirth-emoji {
-  will-change: top; /* Garante que apenas a posição vertical é animada */
-  pointer-events: none; /* Impede que o usuário interaja com os emojis */
+  will-change: top;
+  pointer-events: none;
 }
 
-
-/* Botão da Máquina Caça-níqueis */
+/* ============================================================
+   MÁQUINA CAÇA-NÍQUEIS
+   ============================================================ */
 #slot-machine-button {
   position: fixed;
-  bottom: 15px; /* Ajustado para não encostar no botão da leaderboard */
-  right: 2px;
+  bottom: 15px;
+  right: 12px;
   padding: 12px 22px;
+  font-family: var(--font-display);
   font-size: 16px;
-  font-weight: bold;
-  border-radius: 12px;
-  background: linear-gradient(to right, #00FF7F, #8A2BE2);
+  font-weight: 700;
+  border-radius: var(--radius-md);
+  background: linear-gradient(to right, var(--leaf), var(--grape));
   color: white;
   border: 2px solid #ffffff;
   cursor: pointer;
-  box-shadow: 0 5px 15px rgba(0, 255, 127, 0.7), 0 0 20px #00FF7F;
+  box-shadow: 0 5px 15px rgba(52, 199, 123, 0.5), 0 0 16px rgba(155, 95, 255, 0.4);
   transition: transform 0.2s ease, box-shadow 0.4s ease;
 }
 
 #slot-machine-button:hover {
-  transform: scale(1.1);
-  box-shadow: 0 0 30px #00FF7F, 0 6px 15px rgba(0, 255, 127, 0.7);
+  transform: scale(1.08);
+  box-shadow: 0 0 26px rgba(155, 95, 255, 0.6), 0 6px 15px rgba(52, 199, 123, 0.5);
 }
 
-/* Overlay da Máquina Caça-níqueis */
 #slot-machine-overlay {
   display: none;
   position: fixed;
@@ -763,36 +709,33 @@ button:hover {
   left: 0;
   width: 100%;
   height: 100%;
-  background: radial-gradient(circle, rgba(0, 0, 0, 0.9), rgba(10, 10, 50, 0.9));
+  background: radial-gradient(circle, rgba(28, 18, 48, 0.95), rgba(10, 6, 18, 0.95));
   z-index: 1000;
-  display: flex;
   align-items: center;
   justify-content: center;
   flex-direction: column;
   animation: fadeIn 0.6s ease-in-out;
 }
 
-/* Máquina Caça-níqueis */
 .slot-machine {
-  background: linear-gradient(145deg, #1e1e2f, #2a2a45);
-  border: 5px solid #00FF7F;
-  border-radius: 25px;
+  background: linear-gradient(145deg, var(--bg-panel), var(--bg-panel-light));
+  border: 5px solid var(--leaf);
+  border-radius: var(--radius-lg);
   padding: 30px 50px;
-  box-shadow: 0 8px 20px rgba(0, 255, 127, 0.7), 0 0 30px #00FF7F;
+  box-shadow: 0 8px 20px rgba(52, 199, 123, 0.5), 0 0 30px rgba(155, 95, 255, 0.35);
   max-width: 500px;
   width: 90%;
   text-align: center;
 }
 
-/* Título com tema neon */
 .slot-machine h2 {
+  font-family: var(--font-display);
   font-size: 36px;
-  color: #00FF7F;
-  text-shadow: 0 0 20px #00FF7F, 0 0 40px #8A2BE2;
+  color: var(--leaf);
+  text-shadow: 0 0 16px rgba(52, 199, 123, 0.6), 0 0 30px rgba(155, 95, 255, 0.5);
   margin-bottom: 20px;
 }
 
-/* Estilo para os rolos da máquina */
 .slot-machine .reels {
   display: flex;
   justify-content: space-around;
@@ -806,10 +749,10 @@ button:hover {
   display: inline-block;
   width: 80px;
   height: 80px;
-  background: linear-gradient(135deg, #333, #555);
-  border: 4px solid #00FF7F;
-  border-radius: 12px;
-  box-shadow: 0 5px 15px rgba(0, 255, 127, 0.5);
+  background: linear-gradient(135deg, var(--bg-mid), var(--bg-panel-light));
+  border: 4px solid var(--leaf);
+  border-radius: var(--radius-md);
+  box-shadow: 0 5px 15px rgba(52, 199, 123, 0.4);
   text-align: center;
   line-height: 80px;
   font-size: 40px;
@@ -819,108 +762,69 @@ button:hover {
 }
 
 .slot-machine .reels span:hover {
-  transform: scale(1.2);
-  box-shadow: 0 0 20px #8A2BE2, 0 6px 15px rgba(0, 255, 127, 0.7);
+  transform: scale(1.15);
+  box-shadow: 0 0 20px rgba(155, 95, 255, 0.6), 0 6px 15px rgba(52, 199, 123, 0.5);
 }
 
-/* Botões da Slot Machine */
 .slot-machine button {
   padding: 15px 25px;
   font-size: 18px;
-  background: linear-gradient(to right, #00FF7F, #8A2BE2);
+  background: linear-gradient(to right, var(--leaf), var(--grape));
   color: white;
   border: none;
-  border-radius: 15px;
+  border-radius: var(--radius-lg);
   cursor: pointer;
-  box-shadow: 0 4px 15px rgba(0, 255, 127, 0.7);
+  box-shadow: 0 4px 15px rgba(52, 199, 123, 0.5);
   transition: transform 0.3s ease, box-shadow 0.4s ease;
 }
 
 .slot-machine button:hover {
-  transform: scale(1.1);
-  box-shadow: 0 0 30px #8A2BE2, 0 8px 15px rgba(0, 255, 127, 0.7);
+  transform: scale(1.08);
+  box-shadow: 0 0 26px rgba(155, 95, 255, 0.6), 0 8px 15px rgba(52, 199, 123, 0.5);
 }
 
-/* Animações */
 @keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(-20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  from { opacity: 0; transform: translateY(-20px); }
+  to   { opacity: 1; transform: translateY(0); }
 }
 
-/* Responsividade para dispositivos móveis */
 @media (max-width: 768px) {
-  #slot-machine-button {
-    font-size: 16px;
-  }
-
-  .slot-machine {
-    padding: 20px 30px;
-  }
-
-  .slot-machine h2 {
-    font-size: 28px;
-  }
-
-  .reels {
-    font-size: 40px;
-  }
-
-  .reels span {
-    width: 60px;
-    height: 60px;
-    font-size: 30px;
-    line-height: 60px;
-  }
+  #slot-machine-button { font-size: 16px; }
+  .slot-machine { padding: 20px 30px; }
+  .slot-machine h2 { font-size: 28px; }
+  .slot-machine .reels { font-size: 40px; }
+  .slot-machine .reels span { width: 60px; height: 60px; font-size: 30px; line-height: 60px; }
 }
-
 @media (max-width: 480px) {
-  #slot-machine-button {
-    font-size: 14px;
-  }
-
-  .slot-machine h2 {
-    font-size: 24px;
-  }
-
-  .reels {
-    font-size: 36px;
-  }
-
-  .reels span {
-    width: 50px;
-    height: 50px;
-    font-size: 24px;
-    line-height: 50px;
-  }
+  #slot-machine-button { font-size: 14px; }
+  .slot-machine h2 { font-size: 24px; }
+  .slot-machine .reels { font-size: 36px; }
+  .slot-machine .reels span { width: 50px; height: 50px; font-size: 24px; line-height: 50px; }
 }
 
-
-/* Botão do Present Hunt */
+/* ============================================================
+   PRESENT HUNT
+   ============================================================ */
 #present-hunt-button {
   position: fixed;
-  bottom: 67px; /* Ajustado para não encostar no botão da leaderboard */
-  left: 1px;
+  bottom: 67px;
+  left: 12px;
   padding: 12px 22px;
+  font-family: var(--font-display);
   font-size: 16px;
-  font-weight: bold;
-  border-radius: 12px;
-  background: linear-gradient(to right, #FF0000, #00FF00, #008000);
+  font-weight: 700;
+  border-radius: var(--radius-md);
+  background: linear-gradient(to right, var(--flame), var(--leaf), var(--leaf-dark));
   color: white;
   border: 2px solid #ffffff;
   cursor: pointer;
-  box-shadow: 0 5px 15px rgba(0, 255, 127, 0.7), 0 0 20px #00FF7F;
+  box-shadow: 0 5px 15px rgba(52, 199, 123, 0.5), 0 0 16px rgba(52, 199, 123, 0.4);
   transition: transform 0.2s ease, box-shadow 0.4s ease;
 }
 
 #present-hunt-button:hover:not(.disabled) {
-  background: linear-gradient(to right, #FFA500, #FF6347); /* Gradiente mais intenso */
-  transform: scale(1.1);
+  background: linear-gradient(to right, var(--banana), var(--flame));
+  transform: scale(1.08);
   box-shadow: 0 6px 14px rgba(0, 0, 0, 0.3);
 }
 
@@ -928,9 +832,9 @@ button:hover {
   transform: scale(0.95);
 }
 
-/* Botão Desativado */
 #present-hunt-button.disabled {
-  background: #cccccc;
+  background: #4a4458;
+  color: #948da8;
   cursor: not-allowed;
   box-shadow: none;
 }
