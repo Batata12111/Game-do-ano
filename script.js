@@ -1,3 +1,8 @@
+// ============================================================
+// BANANA TYCOON — lógica do jogo
+// Consolidado: cada função agora existe uma única vez.
+// ============================================================
+
 // Variáveis do jogo
 let money = 0.00;
 let milkshakes = 0;
@@ -15,11 +20,6 @@ let bananaRainActive = false;
 const maxBananas = 20;  // Número máximo de bananas caindo na tela ao mesmo tempo
 const bananaContainer = document.getElementById('banana-rain-container');
 let rainCount = 0;
-let clickCount = 0;
-let eventActive = false;
-let clicksDuringEvent = 0;
-const requiredClicks = 30;
-const eventDuration = 10000; // 10 segundos
 let autoClickers = 0; // Número de Auto Clickers comprados
 let autoClickerPrice = 500; // Preço inicial
 let autoClickerInterval = 5000; // Intervalo inicial (ms)
@@ -30,89 +30,110 @@ let milkshakeFactoryMultiplier = 1.2; // Multiplicador de aumento na produção 
 let rebirthBonus = 100; // Bônus inicial de moedas para o rebirth
 
 // Variáveis específicas para o evento Banana Vermelha
-let redBananaActive = false; // Define se o evento está ativo
-let redBananaClickCount = 0; // Contador de cliques para ativar o evento
-let redBananaEventClicks = 0; // Contador de cliques durante o evento
-const redBananaRequiredClicks = 45; // Número de cliques necessários durante o evento
-const redBananaTriggerClicks = 325; // Número de cliques para disparar o evento
-const redBananaReward = 525; // Recompensa do evento
+let redBananaActive = false;
+let redBananaClickCount = 0;
+let redBananaEventClicks = 0;
+const redBananaRequiredClicks = 45;
+const redBananaTriggerClicks = 325;
+const redBananaReward = 525;
 
-// Variáveis exclusivas do evento
-let redCEO4Cooldown = false; // Controle de cooldown
-const redCEO4CooldownTime = 125000; // 120 segundos em milissegundos
+// Variáveis exclusivas do evento Red_CEO4
+let redCEO4Cooldown = false;
+const redCEO4CooldownTime = 125000; // ~125 segundos
 const redCEO4WinChance = 0.4; // 40% de chance de vitória
 const redCEO4RewardMultiplier = 2; // Dobra as moedas ao vencer
 const redCEO4Penalty = 0.5; // Perde metade das moedas ao perder
-let redCEO4CooldownTimer; // Armazena o intervalo do cooldown
+let redCEO4CooldownTimer;
 
-// Variáveis específicas para o progresso e evento
-let clickCountForProgress = 0;  // Contador de cliques para a barra de progresso
-const totalClicksForCompletion = 125; // Número de cliques necessários para completar a barra de progresso
-const rewardAmount = 225;  // Recompensa para o jogador
-let progressBarActive = false;  // Flag para controlar o estado da barra de progresso
+// Barra de progresso (evento do "Batata / Santa")
+let clickCountForProgress = 0;
+const totalClicksForCompletion = 125;
+const rewardAmount = 225;
+let progressBarActive = false;
 
-let shieldActive = false; // Shield ativo
-let speedBoostActive = false; // Aumentar a velocidade de recompensa por clique
+let shieldActive = false;
+let speedBoostActive = false;
 let rainOfCoinsActive = false;
 
-// Variáveis Globais
-let slotPrice = 200; // Custo inicial para girar a máquina
-let slotJackpot = 10000; // Valor fixo do Jackpot
-let slotActive = false; // Controle para evitar várias aberturas
-let slotCooldown = false; // Controle para cooldown dos giros
+// Máquina caça-níqueis
+let slotPrice = 200;
+let slotJackpot = 10000;
+let slotActive = false;
+let slotCooldown = false;
 
-let presentCooldown = false; // Variável para controle do cooldown
-const cooldownTime = 40000; // 40 segundos em milissegundos
+// Present Hunt
+let presentCooldown = false;
+const cooldownTime = 40000; // 40 segundos
 
-
-// Lógica do clique na banana
+// ============================================================
+// CLIQUE NA BANANA
+// ============================================================
 function clickBanana() {
   money += turboActive ? milkshakeIncome * 2 : milkshakeIncome;
   money = parseFloat(money.toFixed(2));
   updateInfo();
-  trackMission("Click on the banana 100 times");
 
-  // Controla eventos de forma independente
-  if (!eventActive) handleRedBananaEvent(); // Evento da Banana Vermelha
-  if (!redCEO4Active) handleRedCEO4Event(); // Evento do Red_CEO4
-  // Controla eventos de forma independente
-  if (!redCEO4Active) handleRedCEO4Event(); // Evento do Red_CEO4
+  trackMission("Click on the banana 100 times");
+  handleRedBananaEvent();
+  startBananaRain();
 }
 
-// Atualiza as informações na tela
+// ============================================================
+// ATUALIZAÇÃO DE INTERFACE
+// ============================================================
 function updateInfo() {
   document.getElementById('money').textContent = money.toFixed(2);
   document.getElementById('milkshakes').textContent = milkshakes;
   document.getElementById('rebirths').textContent = rebirths;
 }
 
-// Lógica do clique na banana
-function clickBanana() {
-  money += turboActive ? milkshakeIncome * 2 : milkshakeIncome;
-  money = parseFloat(money.toFixed(2));
-  updateInfo();
-  trackMission("Click on the banana 100 times");
-  handleRedBananaEvent();
-  handleRedCEO4Event();
+function updatePrices() {
+  document.getElementById('current-milkshake-price').textContent = milkshakePrice.toFixed(2);
+  document.getElementById('current-upgrade-price').textContent = upgradePrice.toFixed(2);
+  document.getElementById('current-rebirth-price').textContent = rebirthPrice.toFixed(2);
 }
 
-// Função para comprar Milkshake
+// ============================================================
+// NOTIFICAÇÕES
+// ============================================================
+function showNotification(message, type) {
+  const notification = document.createElement('div');
+  notification.classList.add('notification', type);
+
+  const emoji = document.createElement('span');
+  emoji.classList.add('emoji');
+  if (type === 'success') emoji.textContent = '✔️';
+  else if (type === 'error') emoji.textContent = '❌️';
+  else if (type === 'conquest') emoji.textContent = '🏆';
+  else if (type === 'warning') emoji.textContent = '❗️';
+
+  const text = document.createElement('span');
+  text.textContent = message;
+
+  notification.appendChild(emoji);
+  notification.appendChild(text);
+  document.body.appendChild(notification);
+
+  setTimeout(() => { notification.style.right = '20px'; }, 10);
+  setTimeout(() => { notification.style.animation = 'fadeOut 0.5s ease-out forwards'; }, 3000);
+  setTimeout(() => { notification.remove(); }, 4000);
+}
+
+// ============================================================
+// COMPRAS DA LOJA
+// ============================================================
 function buyMilkshake() {
   if (money >= milkshakePrice) {
-    money -= milkshakePrice; // Deduz o preço
+    money -= milkshakePrice;
     milkshakes++;
 
-    // Incremento dinâmico no rendimento
-    const milkshakeBonus = milkshakes % 10 === 0 ? 0.1 : 0.05; // Bônus a cada 10 milkshakes
+    const milkshakeBonus = milkshakes % 10 === 0 ? 0.1 : 0.05;
     milkshakeIncome += milkshakeBonus;
-
-    // Progressão ajustada: Aumentar preço em 30 moedas fixas, em vez de multiplicar
     milkshakePrice += 30;
 
     updateInfo();
-    updatePrices(); // Atualiza a interface com o novo preço
+    updatePrices();
 
-    // Notificação detalhada
     showNotification(
       `You bought a Milkshake! Income per click: ${milkshakeIncome.toFixed(2)}`,
       'success'
@@ -120,7 +141,7 @@ function buyMilkshake() {
 
     animateMilkshakeButton();
   } else {
-    const coinsNeeded = milkshakePrice - money; // Calcula as moedas necessárias
+    const coinsNeeded = milkshakePrice - money;
     showNotification(
       `Not enough coins to buy a milkshake! You need ${coinsNeeded.toFixed(2)} more coins.`,
       'error'
@@ -128,37 +149,29 @@ function buyMilkshake() {
   }
 }
 
-// Função para animar o botão de compra
 function animateMilkshakeButton() {
   const button = document.getElementById('buy-shake');
   button.style.transform = 'scale(1.2)';
-  button.style.boxShadow = '0 0 15px #FFD700'; // Brilho dourado
+  button.style.boxShadow = '0 0 15px #FFD700';
 
   setTimeout(() => {
     button.style.transform = 'scale(1)';
-    button.style.boxShadow = ''; // Remove o brilho após a animação
+    button.style.boxShadow = '';
   }, 300);
 }
 
-
-// Função para comprar Upgrade
 function buyUpgrade() {
   if (money >= upgradePrice) {
-    money -= upgradePrice; // Deduz o preço
+    money -= upgradePrice;
 
-    // Bônus adicional baseado no número de rebirths
-    const bonusMultiplier = 1 + (rebirths * 0.05); // 5% a mais por rebirth
+    const bonusMultiplier = 1 + (rebirths * 0.05);
     milkshakeIncome *= 1.03 * bonusMultiplier;
-
-    // Aumentando o preço de forma linear de 100 em 100
     upgradePrice += 125;
-
-    upgradesPurchased++; // Incrementa o contador de upgrades comprados
+    upgradesPurchased++;
 
     updateInfo();
-    updatePrices(); // Atualiza os preços na interface
+    updatePrices();
 
-    // Notificação com o impacto do upgrade
     showNotification(
       `Upgrade purchased! Milkshake income increased by ${(0.03 * bonusMultiplier * 100).toFixed(2)}%. Total upgrades: ${upgradesPurchased}`,
       'success'
@@ -166,9 +179,8 @@ function buyUpgrade() {
 
     animateUpgradeButton();
 
-    // Recompensa progressiva a cada 10 upgrades
     if (upgradesPurchased % 10 === 0) {
-      money += 500; // Bônus de 500 moedas a cada 10 upgrades
+      money += 500;
       showNotification('Milestone reached: Bonus 500 coins!', 'conquest');
     }
   } else {
@@ -176,59 +188,51 @@ function buyUpgrade() {
   }
 }
 
-// Função para exibir uma animação ao comprar um upgrade
 function animateUpgradeButton() {
   const upgradeButton = document.getElementById('buy-upgrade');
   upgradeButton.style.transform = 'scale(1.2)';
-  upgradeButton.style.boxShadow = '0 0 10px #FFD700'; // Brilho dourado
+  upgradeButton.style.boxShadow = '0 0 10px #FFD700';
 
   setTimeout(() => {
     upgradeButton.style.transform = 'scale(1)';
-    upgradeButton.style.boxShadow = ''; // Remove o brilho
+    upgradeButton.style.boxShadow = '';
   }, 300);
 }
 
-
-// Função para realizar Rebirth
+// ============================================================
+// REBIRTH
+// ============================================================
 function performRebirth() {
   if (money >= rebirthPrice) {
-    // Deduz o custo e incrementa o número de rebirths
     money -= rebirthPrice;
     rebirths++;
 
-    // Calcula o multiplicador baseado no número de rebirths
-    const multiplier = 1 + rebirths * 0.1; // 10% a mais a cada rebirth
+    const multiplier = 1 + rebirths * 0.1;
 
-    // Redefine as estatísticas
     milkshakes = 0;
     milkshakeIncome = 0.05 * multiplier;
-    milkshakePrice = 30.00; // Reinicia o preço do milkshake após rebirth
-    rebirthPrice += 250; // Aumenta o preço linearmente em 250 moedas
+    milkshakePrice = 30.00;
+    rebirthPrice += 250;
 
-    // Atualiza as informações na interface
     updateInfo();
     updatePrices();
 
-    // Mensagem de feedback com sucesso
     showNotification(
       `Rebirth successful! Multiplier is now ${multiplier.toFixed(2)}x.`,
       'success'
     );
 
-    // Concede um bônus ao jogador
-    money += 100;
+    money += rebirthBonus;
     updateInfo();
 
-    // Gera a chuva de emojis
     startRebirthEmojiRain();
   } else {
     showNotification('Not enough coins to perform Rebirth!', 'error');
   }
 }
 
-// Função para iniciar a chuva de emojis 🔄
 function startRebirthEmojiRain() {
-  const maxEmojis = 15; // Máximo de emojis que cairão
+  const maxEmojis = 15;
   let emojiCount = 0;
 
   const interval = setInterval(() => {
@@ -241,70 +245,47 @@ function startRebirthEmojiRain() {
     emoji.classList.add('rebirth-emoji');
     emoji.textContent = '🔄';
 
-    // Configurações de estilo
     emoji.style.position = 'absolute';
-    emoji.style.left = `${Math.random() * window.innerWidth}px`; // Posição horizontal aleatória
-    emoji.style.top = '-30px'; // Começando fora da tela
+    emoji.style.left = `${Math.random() * window.innerWidth}px`;
+    emoji.style.top = '-30px';
     emoji.style.fontSize = '30px';
-    emoji.style.transition = 'top 2s linear'; // Apenas animando a propriedade `top`
+    emoji.style.transition = 'top 2s linear';
 
     document.body.appendChild(emoji);
 
-    // Aguarda para fazer o emoji se mover até a parte inferior da tela
-    setTimeout(() => {
-      emoji.style.top = `${window.innerHeight}px`;
-    }, 10);
-
-    // Remove o emoji após ele sair da tela para evitar acúmulo de elementos
-    setTimeout(() => {
-      emoji.remove();
-    }, 2500);
+    setTimeout(() => { emoji.style.top = `${window.innerHeight}px`; }, 10);
+    setTimeout(() => { emoji.remove(); }, 2500);
 
     emojiCount++;
   }, 100);
 }
 
-// Função para atualizar informações exibidas na interface
-function updateInfo() {
-  document.getElementById('money').textContent = money.toFixed(2);
-  document.getElementById('milkshakes').textContent = milkshakes;
-  document.getElementById('rebirths').textContent = rebirths;
-}
-
-// Função para atualizar os preços na interface
-function updatePrices() {
-  document.getElementById('current-milkshake-price').textContent = milkshakePrice.toFixed(2);
-  document.getElementById('current-upgrade-price').textContent = upgradePrice.toFixed(2);
-  document.getElementById('current-rebirth-price').textContent = rebirthPrice.toFixed(2);
-}
-
-// Função para ativar Auto Clicker
+// ============================================================
+// AUTO CLICKER
+// ============================================================
 function buyAutoClicker() {
   if (money >= autoClickerPrice) {
     money -= autoClickerPrice;
     autoClickers++;
-    autoClickerPrice = Math.ceil(autoClickerPrice * 1.5); // Aumenta o preço progressivamente
-    autoClickerInterval = Math.max(500, autoClickerInterval - 200); // Reduz o intervalo até o limite de 500ms
+    autoClickerPrice = Math.ceil(autoClickerPrice * 1.5);
+    autoClickerInterval = Math.max(500, autoClickerInterval - 200);
 
-    setInterval(() => clickBanana(), autoClickerInterval); // Auto Clicker com o intervalo ajustado
+    setInterval(() => clickBanana(), autoClickerInterval);
 
     updateInfo();
-    updatePrices(); // Atualiza o preço na interface
+    updatePrices();
 
-    // Notificação informando o número e o impacto
     showNotification(
       `Auto Clicker purchased! Active Clickers: ${autoClickers}, Interval: ${autoClickerInterval / 1000}s`,
       'success'
     );
 
-    // Animação para dar feedback visual
     animateAutoClicker();
   } else {
-    showNotification('You don\'t have enough coins to buy Auto Clicker!', 'error');
+    showNotification("You don't have enough coins to buy Auto Clicker!", 'error');
   }
 }
 
-// Animação para indicar a compra do Auto Clicker
 function animateAutoClicker() {
   const autoClickerButton = document.getElementById('buy-auto-clicker');
   autoClickerButton.style.transform = 'scale(1.2)';
@@ -322,37 +303,35 @@ function updateAutoClickerDescription() {
   document.getElementById('buy-auto-clicker').textContent = `🔄 Auto Clicker - ${autoClickerPrice} 💰`;
 }
 
-// Função para comprar Golden Banana
+// ============================================================
+// GOLDEN BANANA / MILKSHAKE FACTORY
+// ============================================================
 function buyGoldenBanana() {
   if (money >= 800) {
     money -= 800;
     const originalIncome = milkshakeIncome;
-    milkshakeIncome *= 2; // Dobra a produção de cliques
+    milkshakeIncome *= 2;
     updateInfo();
     showNotification('Golden Banana activated!', 'success');
     setTimeout(() => {
-      milkshakeIncome = originalIncome; // Volta a produção ao normal
+      milkshakeIncome = originalIncome;
       updateInfo();
-    }, 30000); // Dura 30 segundos
+    }, 30000);
   } else {
-    showNotification('You dont have enough coins to buy Golden Banana!', 'error');
+    showNotification("You don't have enough coins to buy Golden Banana!", 'error');
   }
 }
 
-// Função para comprar Milkshake Factory
 function buyMilkshakeFactory() {
   if (money >= milkshakeFactoryPrice) {
     money -= milkshakeFactoryPrice;
     milkshakeFactoryCount++;
 
-    // Aumenta a produção de milkshakes com base no número de fábricas
     milkshakeIncome *= milkshakeFactoryMultiplier;
-
-    // Aumenta o preço da Milkshake Factory
     milkshakeFactoryPrice = Math.ceil(milkshakeFactoryPrice * 1.5);
 
     updateInfo();
-    updatePrices(); // Atualiza o preço na interface
+    updatePrices();
 
     showNotification(
       `Milkshake Factory purchased! Your milkshake income increased by ${(milkshakeFactoryMultiplier - 1) * 100}%! Total factories: ${milkshakeFactoryCount}`,
@@ -365,19 +344,20 @@ function buyMilkshakeFactory() {
   }
 }
 
-// Animação para o botão da Milkshake Factory
 function animateMilkshakeFactoryButton() {
   const button = document.querySelector('.shop-item button');
   button.style.transform = 'scale(1.2)';
-  button.style.backgroundColor = '#32CD32'; // Cor de sucesso (verde claro)
+  button.style.backgroundColor = '#32CD32';
 
   setTimeout(() => {
     button.style.transform = 'scale(1)';
-    button.style.backgroundColor = ''; // Restaura a cor original
+    button.style.backgroundColor = '';
   }, 300);
 }
 
-// Evento Especial: Banana Vermelha
+// ============================================================
+// EVENTO: BANANA VERMELHA
+// ============================================================
 function handleRedBananaEvent() {
   if (!redBananaActive) {
     redBananaClickCount++;
@@ -398,15 +378,13 @@ function triggerRedBananaEvent() {
   redBananaEventClicks = 0;
 
   const banana = document.getElementById('banana');
-
-  // Exibe uma notificação de aviso
   showNotification('RV has removed all your positions! Click quickly to recover them!', 'warning');
 
   const countdown = document.createElement('div');
   countdown.id = 'red-banana-countdown';
   document.body.appendChild(countdown);
 
-  let timeLeft = 10;
+  let timeLeft = timeExtenderActive ? 15 : 10;
   countdown.textContent = timeLeft;
 
   const timer = setInterval(() => {
@@ -436,100 +414,58 @@ function resetRedBananaEvent(success) {
     showNotification(`You have recovered your positions and earned ${redBananaReward} coins!`, 'success');
     money += redBananaReward;
   } else {
-    showNotification('You failed to recover positions!', 'error');
+    handleFailedEvent();
   }
 
   updateInfo();
 }
 
-
-
-// Função para verificar o impacto do Banana Shield no evento de falha
 function handleFailedEvent() {
   if (bananaShieldActive) {
     showNotification('The Banana Shield protected you from losing coins!', 'success');
   } else {
-    money = Math.max(0, money - 50); // Perde 20 moedas em evento falho sem o Banana Shield
+    money = Math.max(0, money - 50);
     showNotification('You lost your positions and 50 coins!', 'error');
   }
   updateInfo();
 }
 
-// Função para comprar Time Extender
+// ============================================================
+// POWER-UPS TEMPORÁRIOS
+// ============================================================
 function buyTimeExtender() {
   if (money >= 1500) {
     money -= 1500;
     timeExtenderActive = true;
     showNotification('Time Extender activated! Special events will last 5 seconds longer', 'success');
-    setTimeout(() => {
-      timeExtenderActive = false; // Desativa o Time Extender após 30 segundos
-    }, 30000); // Dura 30 segundos
+    setTimeout(() => { timeExtenderActive = false; }, 30000);
     updateInfo();
   } else {
-    showNotification('You dont have enough coins to buy Time Extender!', 'error');
+    showNotification("You don't have enough coins to buy Time Extender!", 'error');
   }
 }
 
-// Função para comprar Banana Shield
 function buyBananaShield() {
   if (money >= 2000) {
     money -= 2000;
     bananaShieldActive = true;
     showNotification('Banana Shield activated! You are protected from losing coins in failed events', 'success');
-    setTimeout(() => {
-      bananaShieldActive = false; // Desativa o Banana Shield após 30 segundos
-    }, 30000); // Dura 30 segundos
+    setTimeout(() => { bananaShieldActive = false; }, 30000);
     updateInfo();
   } else {
-    showNotification('You dont have enough coins to buy Banana Shield!', 'error');
+    showNotification("You don't have enough coins to buy Banana Shield!", 'error');
   }
 }
 
-// Função para mostrar notificações de Conquista, Sucesso e Erro
-function showNotification(message, type) {
-  const notification = document.createElement('div');
-  notification.classList.add('notification', type);
-
-  // Configuração do emoji
-  const emoji = document.createElement('span');
-  emoji.classList.add('emoji');
-  if (type === 'success') emoji.textContent = '✔️';
-  else if (type === 'error') emoji.textContent = '❌️';
-  else if (type === 'conquest') emoji.textContent = '🏆';
-  else if (type === 'warning') emoji.textContent = '❗️';
-
-  const text = document.createElement('span');
-  text.textContent = message;
-
-  // Adicionar ao DOM
-  notification.appendChild(emoji);
-  notification.appendChild(text);
-  document.body.appendChild(notification);
-
-  // Animação de entrada
-  setTimeout(() => {
-    notification.style.right = '20px';
-  }, 10);
-
-  // FadeOut após 3 segundos
-  setTimeout(() => {
-    notification.style.animation = 'fadeOut 0.5s ease-out forwards';
-  }, 3000);
-
-  // Remove após a conclusão da animação
-  setTimeout(() => {
-    notification.remove();
-  }, 4000);
-}
-
-// Missões diárias
+// ============================================================
+// MISSÕES DIÁRIAS
+// ============================================================
 let dailyMissions = [
   { description: "Click on the banana 100 times", progress: 0, goal: 100, reward: 50 },
   { description: "Buy 5 upgrades", progress: 0, goal: 5, reward: 100 },
   { description: "Complete a Rebirth", progress: 0, goal: 1, reward: 200 }
 ];
 
-// Função para rastrear o progresso das missões
 function trackMission(missionType) {
   const mission = dailyMissions.find(m => m.description === missionType);
   if (mission) {
@@ -537,250 +473,157 @@ function trackMission(missionType) {
     if (mission.progress >= mission.goal) {
       showNotification(`Mission Complete: ${mission.description}`, 'conquest');
       money += mission.reward;
-      mission.progress = 0; // Reseta o progresso após a missão ser completada
+      mission.progress = 0;
     }
     updateInfo();
   }
 }
 
-// Exemplo de uso dentro do clique da banana
-function clickBanana() {
-  money += turboActive ? milkshakeIncome * 2 : milkshakeIncome;
-  money = parseFloat(money.toFixed(2));
-  updateInfo();
+// ============================================================
+// LOJA (MODAL)
+// ============================================================
+const shopButton = document.getElementById('shopButton');
+const shopModal = document.getElementById('shopModal');
+const closeShop = document.getElementById('closeShop');
 
-  // Rastreia a missão "Clique 100 vezes na banana"
-  trackMission("Click on the banana 100 times");
-  handleRedBananaEvent();
-}
-
-// Função para mostrar notificações de Conquista, Sucesso e Erro
-function showNotification(message, type) {
-  const notification = document.createElement('div');
-  notification.classList.add('notification', type);
-
-  // Configuração do emoji
-  const emoji = document.createElement('span');
-  emoji.classList.add('emoji');
-  if (type === 'success') emoji.textContent = '✔️';
-  else if (type === 'error') emoji.textContent = '❌️';
-  else if (type === 'conquest') emoji.textContent = '🏆';
-  else if (type === 'warning') emoji.textContent = '❗️';
-
-  const text = document.createElement('span');
-  text.textContent = message;
-
-  // Adicionar ao DOM
-  notification.appendChild(emoji);
-  notification.appendChild(text);
-  document.body.appendChild(notification);
-
-  // Animação de entrada
-  setTimeout(() => {
-    notification.style.right = '20px';
-  }, 10);
-
-  // FadeOut após 3 segundos
-  setTimeout(() => {
-    notification.style.animation = 'fadeOut 0.5s ease-out forwards';
-  }, 3000);
-
-  // Remove após a conclusão da animação
-  setTimeout(() => {
-    notification.remove();
-  }, 4000);
-}
-
-// Função para atualizar as informações na tela
-function updateInfo() {
-  document.getElementById('money').textContent = money.toFixed(2);
-  document.getElementById('milkshakes').textContent = milkshakes;
-  document.getElementById('rebirths').textContent = rebirths;
-}
-
-// Referências dos elementos
-const shopButton = document.getElementById('shopButton'); // Botão para abrir a loja
-const shopModal = document.getElementById('shopModal'); // Modal da loja
-const closeShop = document.getElementById('closeShop'); // Botão para fechar a loja
-
-// Função para abrir a loja
 function openShop() {
-  shopModal.style.display = 'block'; // Exibe o modal
-  document.body.style.overflow = 'hidden'; // Desabilita o scroll quando o modal está aberto
+  shopModal.style.display = 'block';
+  document.body.style.overflow = 'hidden';
 }
 
-// Função para fechar a loja
 function closeShopModal() {
-  shopModal.style.display = 'none'; // Esconde o modal
-  document.body.style.overflow = 'auto'; // Habilita o scroll novamente
+  shopModal.style.display = 'none';
+  document.body.style.overflow = 'auto';
 }
 
-// Evento para abrir a loja ao clicar no botão
 shopButton.addEventListener('click', openShop);
-
-// Evento para fechar a loja ao clicar no botão de fechar
 closeShop.addEventListener('click', closeShopModal);
-
-// Ajuste: Fechar modal ao clicar fora do conteúdo do modal
 shopModal.addEventListener('click', (event) => {
   if (event.target === shopModal) {
-    closeShopModal(); // Fecha a loja somente se o clique for fora do conteúdo do modal
+    closeShopModal();
   }
 });
 
-// Função que começa a chuva de bananas
+// ============================================================
+// CHUVA DE BANANAS
+// ============================================================
 function startBananaRain() {
   if (bananaRainActive) return;
-
   bananaRainActive = true;
-  
+
   const interval = setInterval(() => {
     if (rainCount >= maxBananas) {
-      clearInterval(interval); // Para a chuva se atingir o máximo de bananas
+      clearInterval(interval);
       bananaRainActive = false;
+      return;
     }
 
-    // Cria um novo emoji de banana
     const bananaEmoji = document.createElement('div');
     bananaEmoji.classList.add('banana-emoji');
     bananaEmoji.textContent = '🍌';
 
-    // Define a posição inicial aleatória do emoji na parte superior
     const randomX = Math.random() * window.innerWidth;
     bananaEmoji.style.left = `${randomX}px`;
 
-    // Adiciona o emoji à tela
     bananaContainer.appendChild(bananaEmoji);
-
-    // Incrementa o contador de bananas
     rainCount++;
 
-    // Remove o emoji da tela após ele terminar a animação
     setTimeout(() => {
       bananaEmoji.remove();
-      rainCount--; // Decrementa o contador
-    }, 3000); // 3 segundos depois que o emoji termina sua animação
-  }, 100); // Dispara a cada 100ms para criar a animação
+      rainCount--;
+    }, 3000);
+  }, 100);
 }
 
-// Função de clique na banana
-function clickBanana() {
-  money += milkshakeIncome;
-  money = parseFloat(money.toFixed(2));
-  updateInfo();
-  trackMission("Click on the banana 100 times");
-  handleRedBananaEvent();
-
-  // Inicia a chuva de bananas quando o jogador clicar
-  startBananaRain();
-}
-
-
-
-
-
-// Função para atualizar a barra de progresso
+// ============================================================
+// BARRA DE PROGRESSO
+// ============================================================
 function updateProgressBar() {
   const progressBar = document.getElementById('progress-fill');
   const progressText = document.getElementById('progress-text');
 
-  // Calculando o percentual do progresso
   const progressPercentage = (clickCountForProgress / totalClicksForCompletion) * 100;
 
-  // Atualiza a largura da barra de progresso
   progressBar.style.width = `${progressPercentage}%`;
-
-  // Atualiza o texto dentro da barra
   progressText.textContent = `${Math.floor(progressPercentage)}%`;
 
-  // Quando o progresso chega a 100%, exibe a mensagem de sucesso
   if (clickCountForProgress >= totalClicksForCompletion) {
-    showNotification("Santa Claus (Batata) gave you 225 coins!", 'success');
-    clickCountForProgress = 0;  // Reseta o contador de cliques após a recompensa
-    progressBarActive = false;  // Desativa a barra de progresso até o próximo ciclo
+    money += rewardAmount;
+    updateInfo();
+    showNotification(`Santa Claus (Batata) gave you ${rewardAmount} coins!`, 'success');
+    clickCountForProgress = 0;
+    progressBarActive = false;
   }
 }
 
-// Função para adicionar progressos ao clicar na banana
 function clickBananaForProgress() {
   if (progressBarActive) {
-    clickCountForProgress++; // Aumenta o contador de cliques
+    clickCountForProgress++;
 
     if (clickCountForProgress > totalClicksForCompletion) {
-      clickCountForProgress = totalClicksForCompletion; // Limita o máximo de cliques
+      clickCountForProgress = totalClicksForCompletion;
     }
 
-    updateProgressBar(); // Atualiza a barra de progresso a cada clique
+    updateProgressBar();
   }
 }
 
-// Função para iniciar a barra de progresso
 function startProgressBar() {
   if (!progressBarActive) {
-    progressBarActive = true;  // Ativa a barra de progresso quando o jogador começa a clicar
-    clickCountForProgress = 0; // Reseta o contador de cliques
-    updateProgressBar();  // Atualiza a barra para 0% no começo
+    progressBarActive = true;
+    clickCountForProgress = 0;
+    updateProgressBar();
   }
 }
 
-// Inicializar a barra de progresso
 function initializeProgressBar() {
   const progressBarContainer = document.getElementById('progress-bar');
 
-  // Adicionando o texto dentro da barra
   const progressText = document.createElement('span');
   progressText.id = 'progress-text';
   progressBarContainer.appendChild(progressText);
 
-  // Atualizando a barra para 0% no começo
   updateProgressBar();
 }
 
-// Chama a função de inicialização
 initializeProgressBar();
 
-// Exemplo de como iniciar o progresso com o clique
 document.getElementById('banana').addEventListener('click', () => {
-  startProgressBar(); // Inicia o progresso ao clicar na banana
-  clickBananaForProgress(); // Adiciona o progresso ao clicar
+  startProgressBar();
+  clickBananaForProgress();
 });
 
-
-
-// Função para lidar com o clique no botão do evento
+// ============================================================
+// EVENTO: RED_CEO4 DUEL
+// ============================================================
 function handleRedCEO4Duel() {
-  if (redCEO4Cooldown) return; // Se em cooldown, impede a ativação
+  if (redCEO4Cooldown) return;
 
-  // Ativa o overlay do evento
   triggerRedCEO4Event();
-
-  // Inicia o cooldown
   startRedCEO4Cooldown();
 }
 
-// Função para iniciar o cooldown
 function startRedCEO4Cooldown() {
   const button = document.getElementById("red-ceo4-button");
   redCEO4Cooldown = true;
-  button.classList.add("disabled"); // Desativa o botão visualmente
+  button.classList.add("cooldown");
 
-  let remainingTime = redCEO4CooldownTime / 1000; // Tempo em segundos
+  let remainingTime = redCEO4CooldownTime / 1000;
+  button.dataset.cooldown = `${remainingTime}s`;
 
-  // Atualiza o texto do botão com a contagem regressiva
   redCEO4CooldownTimer = setInterval(() => {
     remainingTime--;
-    button.textContent = `Cooldown: ${remainingTime}s`;
+    button.dataset.cooldown = `${remainingTime}s`;
 
     if (remainingTime <= 0) {
-      clearInterval(redCEO4CooldownTimer); // Para o timer ao final do cooldown
-      redCEO4Cooldown = false; // Permite a reativação do botão
-      button.classList.remove("disabled");
-      button.textContent = "Red_CEO4 Duel"; // Restaura o texto original
+      clearInterval(redCEO4CooldownTimer);
+      redCEO4Cooldown = false;
+      button.classList.remove("cooldown");
+      button.textContent = "Red_CEO4 Duel";
     }
   }, 1000);
 }
 
-// Função para exibir o modal do evento
 function triggerRedCEO4Event() {
   const overlay = document.createElement("div");
   overlay.id = "red-ceo4-overlay";
@@ -788,55 +631,48 @@ function triggerRedCEO4Event() {
   overlay.innerHTML = `
     <h1>Red_CEO4 Duel Challenge!</h1>
     <p>
-       "Red_CEO4 comes with an unexpected challenge. He invites you to a duel for the top of the rankings. The offer is tempting: double your coins in case of victory. But be careful, a defeat could cost you half your fortune. Will you have the courage to accept this confrontation or will you choose safety? The decision is yours." 
+       "Red_CEO4 comes with an unexpected challenge. He invites you to a duel for the top of the rankings. The offer is tempting: double your coins in case of victory. But be careful, a defeat could cost you half your fortune. Will you have the courage to accept this confrontation or will you choose safety? The decision is yours."
     </p>
     <div>
-      <button class="accept" onclick="handleRedCEO4Choice(true)">Accept</button>
-      <button class="decline" onclick="handleRedCEO4Choice(false)">Decline</button>
+      <button id="red-yes" onclick="handleRedCEO4Choice(true)">Accept</button>
+      <button id="red-no" onclick="handleRedCEO4Choice(false)">Decline</button>
     </div>
   `;
 
   document.body.appendChild(overlay);
 }
 
-// Função para processar a escolha do jogador
 function handleRedCEO4Choice(isAccepted) {
   const overlay = document.getElementById("red-ceo4-overlay");
-  overlay.remove(); // Remove o overlay após a escolha
+  overlay.remove();
 
   if (isAccepted) {
-    // Calcula vitória ou derrota
     const result = Math.random() < redCEO4WinChance ? "win" : "lose";
 
     if (result === "win") {
-      money *= redCEO4RewardMultiplier; // Dobra as moedas
+      money *= redCEO4RewardMultiplier;
+      money = parseFloat(money.toFixed(2));
       showNotification("You won the duel! Your coins have doubled!", "success");
     } else {
-      money *= redCEO4Penalty; // Perde metade das moedas
-      money = parseFloat(money.toFixed(2)); // Corrige para 2 casas decimais
+      money *= redCEO4Penalty;
+      money = parseFloat(money.toFixed(2));
       showNotification("You lost the duel! Half of your coins are gone.", "error");
     }
   } else {
-    // Declinação
     showNotification("You declined the duel. Red_CEO4 called you a coward.", "warning");
   }
 
-  updateInfo(); // Atualiza as informações na tela
+  updateInfo();
 }
 
-
-
-// Golden Click 🍌✨
+// ============================================================
+// GOLDEN CLICK
+// ============================================================
 function buyGoldenClick() {
   if (money >= 1000) {
     money -= 1000;
     showNotification('Golden Click activated! Clicks give random coins for 60 seconds.', 'success');
-    
-    let goldenClickTimer = setTimeout(() => {
-      showNotification('Golden Click effect ended.', 'error');
-    }, 15000); // Efeito por 60 segundos
-    
-    // Manipula o clique
+
     function goldenClickEffect() {
       const randomCoins = Math.floor(Math.random() * 6) + 5;
       money += randomCoins;
@@ -845,27 +681,30 @@ function buyGoldenClick() {
     }
 
     document.getElementById('banana').addEventListener('click', goldenClickEffect);
-    
+
     setTimeout(() => {
       document.getElementById('banana').removeEventListener('click', goldenClickEffect);
-      clearTimeout(goldenClickTimer);
+      showNotification('Golden Click effect ended.', 'error');
     }, 60000);
   } else {
     showNotification('Not enough coins for Golden Click!', 'error');
   }
 }
 
-// Rain of Coins 🌧️
+// ============================================================
+// RAIN OF COINS
+// ============================================================
 function buyRainOfCoins() {
   if (money >= 1500 && !rainOfCoinsActive) {
     money -= 1500;
     rainOfCoinsActive = true;
     showNotification('Rain of Coins activated! Collect as many coins as you can for 15 seconds.', 'success');
-    
+
     let interval = setInterval(() => {
       const randomX = Math.random() * window.innerWidth;
       const coin = document.createElement('div');
       coin.textContent = '🪙';
+      coin.classList.add('coin');
       coin.style.position = 'absolute';
       coin.style.left = `${randomX}px`;
       coin.style.top = '0px';
@@ -874,13 +713,8 @@ function buyRainOfCoins() {
 
       document.body.appendChild(coin);
 
-      setTimeout(() => {
-        coin.style.top = `${window.innerHeight}px`;
-      }, 10);
-
-      setTimeout(() => {
-        coin.remove();
-      }, 1000);
+      setTimeout(() => { coin.style.top = `${window.innerHeight}px`; }, 10);
+      setTimeout(() => { coin.remove(); }, 1000);
     }, 100);
 
     setTimeout(() => {
@@ -893,15 +727,16 @@ function buyRainOfCoins() {
   }
 }
 
-
-
-// Função para abrir a Máquina Caça-níqueis
+// ============================================================
+// MÁQUINA CAÇA-NÍQUEIS
+// ============================================================
 function openSlotMachine() {
   if (slotActive) return;
   slotActive = true;
 
   const overlay = document.createElement('div');
   overlay.id = 'slot-machine-overlay';
+  overlay.style.display = 'flex';
 
   overlay.innerHTML = `
     <div class="slot-machine">
@@ -919,7 +754,6 @@ function openSlotMachine() {
   document.body.appendChild(overlay);
 }
 
-// Função para fechar a Máquina Caça-níqueis
 function closeSlotMachine() {
   const overlay = document.getElementById('slot-machine-overlay');
   if (overlay) {
@@ -928,7 +762,6 @@ function closeSlotMachine() {
   }
 }
 
-// Função para girar a Máquina Caça-níqueis
 function spinSlotMachine() {
   if (slotCooldown) {
     showNotification('Please wait before spinning again!', 'warning');
@@ -940,7 +773,6 @@ function spinSlotMachine() {
     return;
   }
 
-  // Inicia cooldown com contador
   slotCooldown = true;
   const spinButton = document.getElementById('spin-button');
   spinButton.disabled = true;
@@ -955,51 +787,47 @@ function spinSlotMachine() {
   money -= slotPrice;
   updateInfo();
 
-  const emojis = ['🍟', '🧋', '🥛', '🍌']; // Emojis disponíveis
+  const emojis = ['🍟', '🧋', '🥛', '🍌'];
   const reels = [
     document.getElementById('reel1'),
     document.getElementById('reel2'),
     document.getElementById('reel3'),
   ];
 
-  // Inicia a animação dos rolos
   reels.forEach((reel, index) => {
-    let spins = 15 + index * 5; // Número de giros por rolo
+    let spins = 15 + index * 5;
     const interval = setInterval(() => {
       reel.textContent = emojis[Math.floor(Math.random() * emojis.length)];
       spins--;
-
-      if (spins <= 0) clearInterval(interval); // Para a rotação individual
+      if (spins <= 0) clearInterval(interval);
     }, 100);
   });
 
-  // Aguarda o término da animação antes de calcular o resultado
   setTimeout(() => {
-    const result = reels.map(reel => reel.textContent); // Captura o resultado final dos rolos
+    const result = reels.map(reel => reel.textContent);
 
-    // Verifica combinações
     if (result.every(e => e === '🍟')) {
-      const jackpotWin = 10000; // Valor fixo para Jackpot
-      money += jackpotWin;
-      showNotification(`🎉 JACKPOT! You won ${jackpotWin} coins!`, 'conquest');
+      money += slotJackpot;
+      showNotification(`🎉 JACKPOT! You won ${slotJackpot} coins!`, 'conquest');
     } else if (new Set(result).size === 1) {
-      const tripleWin = 1000; // Valor fixo para 3 iguais (exceto Batata)
+      const tripleWin = 1000;
       money += tripleWin;
       showNotification(`Amazing! You won ${tripleWin} coins!`, 'success');
     } else if (result[0] === result[1] || result[0] === result[2] || result[1] === result[2]) {
-      const partialWin = 200; // Valor fixo para dois iguais
+      const partialWin = 200;
       money += partialWin;
       showNotification(`Great! You won ${partialWin} coins!`, 'success');
     } else {
       showNotification('Better luck next time!', 'error');
     }
 
-    updateInfo(); // Atualiza os dados na tela
-  }, 2500); // Espera um pouco mais que o tempo total da animação
+    updateInfo();
+  }, 2500);
 }
 
-
-// Função para iniciar o evento "Caça aos Presentes"
+// ============================================================
+// PRESENT HUNT
+// ============================================================
 function startPresentHunt() {
   if (presentCooldown) {
     showNotification('⏳ Please wait before starting the event again!', 'warning');
@@ -1011,53 +839,51 @@ function startPresentHunt() {
     return;
   }
 
-  // Deduz o custo para iniciar o evento
   money -= 350;
   updateInfo();
   presentCooldown = true;
   toggleButtonCooldown();
 
-  showNotification('🎄 Moon dropped Santa\'s presents, help her pick them up  🎁', 'warning');
+  showNotification("🎄 Moon dropped Santa's presents, help her pick them up 🎁", 'warning');
 
   let presentInterval = setInterval(() => {
-  const present = document.createElement('div');
-  
-  const presentTypes = [
-    { type: 'small', emoji: '🎁', reward: 9999999999999999999999999999999999999999999999999999, chance: 60 }, // 60%
-    { type: 'medium', emoji: '🎁', reward: 75, chance: 30 }, // 30%
-    { type: 'large', emoji: '🎁', reward: 450, chance: 7 }, // 7%
-    { type: 'rare', emoji: '🎁', reward: 750, chance: 3 } // 3%
-  ];
+    const present = document.createElement('div');
 
-  // Função para selecionar um presente com base nas probabilidades
-  const randomChoice = () => {
-    const rand = Math.random() * 100; // Gera um número entre 0 e 100
-    let cumulativeChance = 0;
+    // Recompensas corrigidas (o valor original do tipo "small" tinha um dígito
+    // absurdo — 54 noves — que quebrava a economia do jogo em 60% dos casos).
+    const presentTypes = [
+      { type: 'small', emoji: '🎁', reward: 15, chance: 60 },
+      { type: 'medium', emoji: '🎁', reward: 75, chance: 30 },
+      { type: 'large', emoji: '🎁', reward: 450, chance: 7 },
+      { type: 'rare', emoji: '🎁', reward: 750, chance: 3 }
+    ];
 
-    for (let i = 0; i < presentTypes.length; i++) {
-      cumulativeChance += presentTypes[i].chance;
-      if (rand <= cumulativeChance) {
-        return presentTypes[i];
+    const randomChoice = () => {
+      const rand = Math.random() * 100;
+      let cumulativeChance = 0;
+
+      for (let i = 0; i < presentTypes.length; i++) {
+        cumulativeChance += presentTypes[i].chance;
+        if (rand <= cumulativeChance) {
+          return presentTypes[i];
+        }
       }
-    }
-    return presentTypes[presentTypes.length - 1]; // Caso algo dê errado, devolve o último
-  };
+      return presentTypes[presentTypes.length - 1];
+    };
 
-  const randomPresent = randomChoice();
+    const randomPresent = randomChoice();
 
-  // Configurar o elemento presente na tela
-  present.classList.add('present', randomPresent.type);
-  present.textContent = randomPresent.emoji;
-  present.style.position = 'absolute';
-  present.style.left = `${Math.random() * 90}vw`;
-  present.style.top = `${Math.random() * 80}vh`;
-  present.dataset.reward = randomPresent.reward;
+    present.classList.add('present', randomPresent.type);
+    present.textContent = randomPresent.emoji;
+    present.style.position = 'absolute';
+    present.style.left = `${Math.random() * 90}vw`;
+    present.style.top = `${Math.random() * 80}vh`;
+    present.dataset.reward = randomPresent.reward;
 
-  document.body.appendChild(present);
+    document.body.appendChild(present);
 
-  // Remove o presente após 5 segundos
-  setTimeout(() => present.remove(), 5000);
-    
+    setTimeout(() => present.remove(), 5000);
+
     present.addEventListener('click', () => {
       money += Number(present.dataset.reward);
       updateInfo();
@@ -1068,13 +894,12 @@ function startPresentHunt() {
 
   setTimeout(() => {
     clearInterval(presentInterval);
-    showNotification('🎄 You helped Moon get the presents, now you\'re on the good boy list  🎁', 'success');
+    showNotification("🎄 You helped Moon get the presents, now you're on the good boy list 🎁", 'success');
     presentCooldown = false;
     toggleButtonCooldown();
-  }, 20000); // O evento dura apenas 20 segundos
+  }, 20000);
 }
 
-// Função para desabilitar e reabilitar o botão durante o cooldown
 function toggleButtonCooldown() {
   const button = document.getElementById('present-hunt-button');
   if (presentCooldown) {
@@ -1084,10 +909,4 @@ function toggleButtonCooldown() {
     button.classList.remove('disabled');
     button.disabled = false;
   }
-
-  // Retorna após 40 segundos
-  setTimeout(() => {
-    presentCooldown = false;
-    toggleButtonCooldown();
-  }, cooldownTime);
 }
